@@ -1,4 +1,8 @@
+import { useUser } from '../Logic/UserContext';
+
 function ProfileHeader() {
+  const user = useUser();
+
   return (
     <header id="header" className="header">
       <div className="kbin-container">
@@ -11,7 +15,6 @@ function ProfileHeader() {
         <nav className="head-nav">
           <div className="brand">
             <div data-action="click->kbin#handleNavToggleClick">
-              <i className="nav-toggle fa-solid fa-bars"></i>
             </div>
             <a href="/">
               <img
@@ -75,17 +78,17 @@ function ProfileHeader() {
             </ul>
           </li>
           <li className="dropdown">
-            <a className=" login" href="/u/papapapapapapapapapap">
-              <span className="user-name">papapapapapapapapapap</span>
+            <a className=" login" href="#">
+              <span className="user-name">{user.username}</span>
             </a>
             <ul className="dropdown__menu">
               <li>
-                <a href="/u/papapapapapapapapapap" className="">
+                <a href={`/profile/${user.id}`} className="">
                   Profile
                 </a>
               </li>
               <li>
-                <a href="/settings/general" className="">
+                <a href="/profile/settings" className="">
                   Settings
                 </a>
               </li>

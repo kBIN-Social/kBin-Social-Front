@@ -1,6 +1,92 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useToken, useUser } from '../Logic/UserContext';
 
-function ProfileContent() {
+function TokenSmall({ token }){
+  return token ? <small>{`ApiKey: Token ${token}`}</small> : null;
+}
+
+function ProfileContent({user}) {
+  const token = useToken();
+  const [threads, setThreads] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [boosts, setBoosts] = useState([]);
+  const [filterState, setFilterState] = useState('top');
+  const [elementState, setElementState] = useState('threads');
+  const [threadState, setThreadState] = useState('all');
+  
+  useEffect(() => {
+    const fetchData = async () => {
+
+        try {
+          const threadsData = await getUserThreads(user, token);
+          setThreads(threadsData);
+        } catch (error) {
+          console.error('Error fetching threads:', error);
+        }
+        try {
+          const commentsData = await getUserComments(user, token);
+          setComments(commentsData);
+        } catch (error) {
+          console.error('Error fetching comments:', error);
+        }
+        try {
+          const boostsData = await getUserBoosts(user, token);
+          setBoosts(boostsData);
+        } catch (error) {
+          console.error('Error fetching boosts:', error);
+        }
+    }
+    if (token) {
+        fetchData();
+    }
+}, [user, token]);
+
+async function getUserThreads(user, token) {
+    //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=top`, {
+    console.log(user.id)
+    const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/threads?order_by=top`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error fetching threads');
+    }
+    return response.json();
+}
+
+async function getUserComments(user, token) {
+  //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=top`, {
+  const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/comments?order_by=top`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching comments');
+  }
+  return response.json();
+}
+
+async function getUserBoosts(user, token) {
+  //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts?order_by=top`, {
+  const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/boosts?order_by=top`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching comments');
+  }
+  return response.json();
+}
+
   return (
 <div id="middle" className="page-user page-user-overview">
   <div className="kbin-container">
@@ -11,8 +97,8 @@ function ProfileContent() {
             <div className="user-main" id="content">
               <div>
                 <div className="row">
-                  <h1>papapapapapapapapapap</h1>
-                  <small>@papapapapapapapapapap@kbin.social</small>
+                  <h1>{user.username}</h1>
+                  <TokenSmall/>
                 </div>
                 <aside className="user__actions" data-controller="subs"></aside>
               </div>
@@ -24,18 +110,27 @@ function ProfileContent() {
         <div></div>
         <menu className="options__main">
           <li>
-            <a href="/u/papapapapapapapapapap/threads" className="">
-              threads (0)
+            <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setElementState("threads")
+            }} className={elementState === "threads" ? "active" : ""}>
+              {`threads (${threads.length})`}
             </a>
           </li>
           <li>
-            <a href="/u/papapapapapapapapapap/comments" className="">
-              comments (0)
+            <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setElementState("comments")
+            }} className={elementState === "comments" ? "active" : ""}>
+              {`comments (${comments.length})`}
             </a>
           </li>
           <li>
-            <a href="/u/papapapapapapapapapap/boosts" className="">
-              boosts (0)
+            <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setElementState("boosts")
+            }} className={elementState === "boosts" ? "active" : ""}>
+              {`boosts (${boosts.length})`}
             </a>
           </li>
         </menu>
@@ -44,18 +139,27 @@ function ProfileContent() {
         <div></div>
         <menu className="options__main no-scroll">
           <li>
-            <a href="/top" className="">
+            <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setFilterState("top")
+            }} className={filterState === "top" ? "active" : ""}>
               top
             </a>
           </li>
           <li>
-            <a href="/newest" className="">
+          <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setFilterState("newest")
+            }} className={filterState === "newest" ? "active" : ""}>
               newest
             </a>
           </li>
           <li>
-            <a href="/commented" className="">
-              commented
+          <a href="#" onClick={(e)=>{
+              e.preventDefault();
+              setFilterState("oldest")
+            }} className={filterState === "oldest" ? "active" : ""}>
+              oldest
             </a>
           </li>
         </menu>
@@ -66,17 +170,26 @@ function ProfileContent() {
             </button>
             <ul className="dropdown__menu">
               <li>
-                <a href="/hot/%E2%88%9E/all" className="active">
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setThreadState("all")
+                }} className={threadState === "all" ? "active" : ""}>
                   all
                 </a>
               </li>
               <li>
-                <a href="/hot/%E2%88%9E/links" className="">
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setThreadState("links")
+                }} className={threadState === "links" ? "active" : ""}>
                   links
                 </a>
               </li>
               <li>
-                <a href="/hot/%E2%88%9E/articles" className="">
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setThreadState("threads")
+                }} className={threadState === "threads" ? "active" : ""}>
                   threads
                 </a>
               </li>
