@@ -33,16 +33,11 @@ export const UserContextProvider  = ({ children }) => {
     }
     return response.json();
   }
-
-  if (user) {
-    return (
-      <UserContext.Provider value={{ token, setAuthToken, user }}>
-        {children}
-      </UserContext.Provider>
-    );
-  } else {
-    return null;
-  }
+  return (
+    <UserContext.Provider value={{ token, setAuthToken, user }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useToken = () => useContext(UserContext).token;
