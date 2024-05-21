@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+.comment header {
+  color: var(--kbin-meta-text-color);
+  font-size: .8rem;
+  grid-area: header;
+  opacity: .75;
+}
+
+
+
