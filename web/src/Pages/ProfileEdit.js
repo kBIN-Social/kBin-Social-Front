@@ -1,5 +1,5 @@
 import ProfileForm from "../Components/ProfileForm";
-import ProfileHeader from "../Components/ProfileHeader";
+import Header from "../Components/Header";
 import React from 'react';
 
 function ProfileEdit() {
@@ -7,7 +7,7 @@ function ProfileEdit() {
     return (
         <div className="theme--dark" data-controller="kbin notifications" data-turbo="false">
             <React.Fragment>
-                <ProfileHeader />
+                <Header />
                 <ProfileForm  />
             </React.Fragment>
         </div>

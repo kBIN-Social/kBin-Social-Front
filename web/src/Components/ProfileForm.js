@@ -1,9 +1,11 @@
 import React from "react";
 import { useToken, useUser } from '../Logic/UserContext';
+import { useNavigate } from "react-router-dom";
 
 function ProfileForm() {
     const token = useToken();
     const user = useUser();
+    const navigate = useNavigate();
 
     function updateUsernameLength() {
         const input = document.getElementById('user_basic_username'); // Obtener el input del username
@@ -55,6 +57,7 @@ function ProfileForm() {
         if (!response.ok) {
             throw new Error('Error fetching comments');
         }
+        navigate(`/profile/${user.id}`);
     }
 
   return (
