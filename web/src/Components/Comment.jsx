@@ -1,4 +1,5 @@
- export default function comment(author,body,created_at) {
+ import React from "react"
+ export default function comment({author,body,created_at,father }) {
     return (
         <blockquote class="section comment entry-comment subject comment-level--1" id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
             <header>
@@ -12,7 +13,7 @@
                 <div class="no-avatar popover-control--active" aria-expanded="true"></div>
                     </a>
             </figure>
-            <div class="content" style="">
+            <div class="content">
                 <p>{body}</p>
             </div>
             <footer>
