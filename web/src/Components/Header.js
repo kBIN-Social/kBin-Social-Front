@@ -1,6 +1,6 @@
 import { useUser } from '../Logic/UserContext';
 
-function ProfileHeader() {
+function Header() {
   const user = useUser();
 
   return (
@@ -103,4 +103,4 @@ function ProfileHeader() {
   );
 }
 
-export default ProfileHeader;
+export default Header;

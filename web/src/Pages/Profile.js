@@ -1,6 +1,6 @@
 import ProfileContent from "../Components/ProfileContent";
 import ProfileHead from "../Components/ProfileHead";
-import ProfileHeader from "../Components/ProfileHeader";
+import Header from "../Components/Header";
 import { useToken, useUser } from '../Logic/UserContext';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -45,7 +45,7 @@ function Profile() {
         <div className="theme--dark" data-controller="kbin notifications" data-turbo="false">  
             {user && (
                 <React.Fragment>
-                    <ProfileHeader />
+                    <Header />
                     <ProfileContent user={user} />
                 </React.Fragment>
             )}

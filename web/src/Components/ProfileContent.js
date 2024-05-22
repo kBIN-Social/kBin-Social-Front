@@ -7,6 +7,7 @@ function TokenSmall({ token }){
 
 function ProfileContent({user}) {
   const token = useToken();
+  const authUser = useUser();
   const [threads, setThreads] = useState([]);
   const [comments, setComments] = useState([]);
   const [boosts, setBoosts] = useState([]);
@@ -39,6 +40,8 @@ function ProfileContent({user}) {
     if (token) {
         fetchData();
     }
+    console.log(user)
+    console.log(authUser)
 }, [user, token]);
 
 async function getUserThreads(user, token) {
@@ -93,16 +96,24 @@ async function getUserBoosts(user, token) {
     <main id="main" data-controller="lightbox timeago" className="view-compact">
       <div className="section section--top">
         <div className="user-box">
-          <div>
-            <div className="user-main" id="content">
-              <div>
-                <div className="row">
-                  <h1>{user.username}</h1>
-                  <TokenSmall/>
-                </div>
-                <aside className="user__actions" data-controller="subs"></aside>
+          <div className="with-cover with-avatar">
+              <img height="220" width="100%" className="cover" src={user.cover}/>
+              <div className="user-main" id="content">
+                  <div>
+                      <div className="row">
+                          <figure>
+                          <img width="100" height="100" style={{maxWidth: '100px', maxHeight: '100px'}} src={user.avatar}/>
+                          </figure>
+                          <h1>{user.username}</h1>
+                          <TokenSmall/>
+                      </div>
+                  </div>
               </div>
-            </div>
+              <div className="about">
+                <div className="content">
+                  <p>{user.description}</p>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -125,14 +136,19 @@ async function getUserBoosts(user, token) {
               {`comments (${comments.length})`}
             </a>
           </li>
-          <li>
+          { (user.id == authUser.id) ? (
+            <li>
             <a href="#" onClick={(e)=>{
               e.preventDefault();
               setElementState("boosts")
             }} className={elementState === "boosts" ? "active" : ""}>
               {`boosts (${boosts.length})`}
             </a>
-          </li>
+          </li>)
+          : 
+            null
+        }
+
         </menu>
       </aside>
       <aside className="options options--top" id="options">
