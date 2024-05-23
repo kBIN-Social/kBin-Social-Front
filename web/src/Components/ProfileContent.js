@@ -165,17 +165,17 @@ async function getUserBoosts(user, token) {
           <li>
           <a href="#" onClick={(e)=>{
               e.preventDefault();
-              setFilterState("newest")
-            }} className={filterState === "newest" ? "active" : ""}>
-              newest
+              setFilterState("recent")
+            }} className={filterState === "recent" ? "active" : ""}>
+              recent
             </a>
           </li>
           <li>
           <a href="#" onClick={(e)=>{
               e.preventDefault();
-              setFilterState("oldest")
-            }} className={filterState === "oldest" ? "active" : ""}>
-              oldest
+              setFilterState("commented")
+            }} className={filterState === "commented" ? "active" : ""}>
+              commented
             </a>
           </li>
         </menu>
