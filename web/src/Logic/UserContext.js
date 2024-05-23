@@ -33,6 +33,7 @@ export const UserContextProvider  = ({ children }) => {
     }
     return response.json();
   }
+
   return (
     <UserContext.Provider value={{ token, setAuthToken, user }}>
       {children}
