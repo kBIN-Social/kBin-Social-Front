@@ -45,9 +45,7 @@ function ProfileContent({user}) {
 }, [user, token]);
 
 async function getUserThreads(user, token) {
-    //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=top`, {
-    console.log(user.id)
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/threads?order_by=top`, {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=top`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -61,8 +59,7 @@ async function getUserThreads(user, token) {
 }
 
 async function getUserComments(user, token) {
-  //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=top`, {
-  const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/comments?order_by=top`, {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=top`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -76,8 +73,7 @@ async function getUserComments(user, token) {
 }
 
 async function getUserBoosts(user, token) {
-  //const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts?order_by=top`, {
-  const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}/boosts?order_by=top`, {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts?order_by=top`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

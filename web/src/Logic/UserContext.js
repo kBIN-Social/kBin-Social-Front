@@ -18,12 +18,11 @@ export const UserContextProvider  = ({ children }) => {
   };
 
   useEffect(() => {
-    setAuthToken('e627487a714ca26a5128d9e5939e3f54d8ed90b2');
+    setAuthToken('1f9ee43643d3329bf123abdfb42d840edcf981ef');
   }, []); 
 
   async function getUserData(token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/me`, {
-    //const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
