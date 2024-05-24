@@ -1,5 +1,5 @@
  import React from "react"
- export default function comment({author_id,author,avatar,body,created_at,father,likes,dislikes,boosts }) {
+ export default function comment({author_id,author,avatar,body,created_at,father,likes,dislikes,boosts,handleLike,handleDislike,handleBoosts }) {
     return (
         <blockquote class="section comment entry-comment subject comment-level--1" id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
             <header>

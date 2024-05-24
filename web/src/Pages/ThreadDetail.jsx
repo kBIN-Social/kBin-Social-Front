@@ -6,6 +6,8 @@ import Header from '../Components/Header';
 export default function ThreadDetail() {
     const { id } = useParams();
     const [comments, setComments] = useState([]);
+    const localUrl = "http://127.0.0.1:8000"
+    const deployUrl = "https://asw-kbin.azurewebsites.net"
 
     useEffect(() => {
         const fetchCommentData = async () => {
@@ -25,12 +27,12 @@ export default function ThreadDetail() {
     }, [id]);
 
     async function getCommentsData() {
-        const endPoint = `http://127.0.0.1:8000/api/v1/threads/${id}/comments`;
+        const endPoint = deployUrl + `/api/v1/threads/${id}/comments`;
         const response = await fetch(endPoint, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token f26738bf293dc08f2af9c67ee62b46867fad2860`,
+                'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
             },
             credentials: 'include'
         });
@@ -41,12 +43,12 @@ export default function ThreadDetail() {
     }
 
     async function getUserDetails(userId) {
-        const endPoint = `http://127.0.0.1:8000/api/v1/profile/${userId}`;
+        const endPoint = deployUrl +`/api/v1/profile/${userId}`;
         const response = await fetch(endPoint, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token f26738bf293dc08f2af9c67ee62b46867fad2860`,
+                'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
             },
             credentials: 'include'
         });
@@ -59,6 +61,46 @@ export default function ThreadDetail() {
     if (!comments.length) {
         return <div>Loading...</div>;
     }
+    const handleLike = async (commentId) => {
+        try {
+            const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/like`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
+                },
+                credentials: 'include'
+            });
+             if(response.status == 409 ) {
+                setComments(comments.map(comment => comment.id === commentId ? { ...comment, likes: comment.likes - 1 } : comment));
+            }
+            else if(response.ok)
+            // Update the likes count in the state
+            setComments(comments.map(comment => comment.id === commentId ? { ...comment, likes: comment.likes + 1 } : comment));
+        } catch (error) {
+            console.error('Error liking comment:', error);
+        }
+    };
+
+    const handleDislike = async (commentId) => {
+        try {
+            const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/dislike`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
+                },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error('Error disliking comment');
+            }
+            // Update the dislikes count in the state
+            setComments(comments.map(comment => comment.id === commentId ? { ...comment, dislikes: comment.dislikes + 1 } : comment));
+        } catch (error) {
+            console.error('Error disliking comment:', error);
+        }
+    };
 
     const listComments = comments.map((commentInfo) =>
         <li key={commentInfo.id}>
@@ -70,6 +112,8 @@ export default function ThreadDetail() {
                 avatar={commentInfo.userDetails.avatar} // assuming userDetails has an avatar field
                 likes={commentInfo.likes.length}
                 dislikes={commentInfo.dislikes.length}
+                handleLike={handleLike}
+                handleDislike={handleDislike}
             />
         </li>
     );

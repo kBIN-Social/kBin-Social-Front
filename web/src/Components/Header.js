@@ -2,7 +2,29 @@ import { useUser } from '../Logic/UserContext';
 
 function Header() {
   const user = useUser();
+  function isUser() {
+    if(user == null ) return null ;
+    else {
+      return (
+        <ul className="dropdown__menu">
+              <li>
 
+                <a href={`/profile/${user.id}`} className="">
+                  Profile
+                </a>
+              </li>
+              <li>
+                <a href="/profile/settings" className="">
+                  Settings
+                </a>
+              </li>
+              <li>
+                <a href="/logout">Log out</a>
+              </li>
+            </ul>
+      ) ;
+    }
+  }
   return (
     <header id="header" className="header">
       <div className="kbin-container">
@@ -78,24 +100,10 @@ function Header() {
             </ul>
           </li>
           <li className="dropdown">
-            <a className=" login" href="#">
-              <span className="user-name">{user.username}</span>
+            <a className=" login" href=  {user? `/profile/${user.id}`: "/login"} >
+              <span className="user-name">{user? user.username:"Login"}</span>
             </a>
-            <ul className="dropdown__menu">
-              <li>
-                <a href={`/profile/${user.id}`} className="">
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a href="/profile/settings" className="">
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a href="/logout?">Log out</a>
-              </li>
-            </ul>
+           {isUser}
           </li>
         </menu>
       </div>
