@@ -5,9 +5,10 @@ import ProfileEdit from "../Pages/ProfileEdit";
 import NotFound from "../Pages/NotFound";
 import App from "../App";
 import ThreadDetail from "../Pages/ThreadDetail";
+import Home from "../Pages/Home"
 
 export const nav = [
-  { path: "/", name: "Home", element: <App />, auth: false },
+  { path: "/", name: "Home", element: <Home />, auth: false },
   { path: "/profile/:id", name: "Profile", element: <Profile />, auth: false },
   { path: "/profile/settings", name: "Settings", element: <ProfileEdit />, auth: true },
   {path: "/threads/:id", name: "ThreadDetail", element: <ThreadDetail></ThreadDetail>,auth:false },

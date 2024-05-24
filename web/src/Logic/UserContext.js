@@ -11,17 +11,18 @@ export const UserContextProvider  = ({ children }) => {
     try {
       const userData = await getUserData(newToken);
       setUser(userData);
+      
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
   };
 
   useEffect(() => {
-    setAuthToken('e155590df0f27f14e097efe6c93c2f7333ec4012');
+    setAuthToken('1f9ee43643d3329bf123abdfb42d840edcf981ef');
   }, []); 
 
   async function getUserData(token) {
-    const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/me`, {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/me`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -31,8 +32,10 @@ export const UserContextProvider  = ({ children }) => {
     if (!response.ok) {
       throw new Error('Error fetching user data');
     }
+    console.log(`Token ${token} | User ${response.json()}`)
     return response.json();
   }
+
   return (
     <UserContext.Provider value={{ token, setAuthToken, user }}>
       {children}

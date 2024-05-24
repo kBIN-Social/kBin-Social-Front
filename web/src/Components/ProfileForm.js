@@ -47,7 +47,7 @@ function ProfileForm() {
         formData.set('avatar', avatar);
         formData.set('cover', cover);
 
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/profile/${user.id}`, {
+        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}`, {
             method: 'PUT',
             headers: {
             'Authorization': `Token ${token}`,
