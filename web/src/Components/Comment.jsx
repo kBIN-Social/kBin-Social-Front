@@ -1,5 +1,6 @@
  import React from "react"
- export default function comment({author_id,author,avatar,body,created_at,father,likes,dislikes,boosts,handleLike,handleDislike,handleBoosts }) {
+ export default function comment(props) {
+    const {comment_id,author_id,author,body,created_at,likes,dislikes,handleLike,handleDislike} = props ;
     return (
         <blockquote class="section comment entry-comment subject comment-level--1" id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
             <header>
@@ -17,19 +18,14 @@
                 <p>{body}</p>
             </div>
             <aside class="vote">
-                            <form method="post" class="vote__up">
-                                <button type="submit" title="Favorite" aria-label="Favorite" data-action="subject#vote">
+                                <button class = "vote_up" onClick={handleLike.bind(this,comment_id)} type="submit" title="Favorite" aria-label="Favorite" data-action="subject#vote">
                                     <span data-subject-target="favCounter">{likes}</span> <span><i
                                             class="fa-solid fa-arrow-up"></i></span>
                                 </button>
-                            </form>
-                            <form method="post"  class="vote__down">
-                                <button type="submit" title="Reduce" aria-label="Reduce" data-action="subject#vote"
-                                    class="vote__up">
+                                <button class ="vote_down" onClick={handleDislike.bind(this,comment_id)} type="submit" title="Reduce" aria-label="Reduce" data-action="subject#vote">
                                     <span data-subject-target="downvoteCounter">{dislikes}</span> <span><i
                                             class="fa-solid fa-arrow-down"></i></span>
-                                </button>
-                            </form>         
+                                </button>   
                         </aside>
 
             <footer>

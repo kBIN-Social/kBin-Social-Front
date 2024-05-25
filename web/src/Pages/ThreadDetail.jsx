@@ -65,7 +65,7 @@ export default function ThreadDetail() {
     if (!comments.length) {
         return <div>Loading...</div>;
     }
-    const handleLike = async (commentId) => {
+     async function handleLike (commentId)  {
         try {
             const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/like`, {
                 method: 'POST',
@@ -85,8 +85,7 @@ export default function ThreadDetail() {
             console.error('Error liking comment:', error);
         }
     };
-
-    const handleDislike = async (commentId) => {
+ async function handleDislike (commentId)  {
         try {
             const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/dislike`, {
                 method: 'POST',
@@ -109,6 +108,7 @@ export default function ThreadDetail() {
     const listComments = comments.map((commentInfo) =>
         <li key={commentInfo.id}>
             <Comment
+                comment_id = {commentInfo.id}
                 author_id={commentInfo.author}
                 author={commentInfo.userDetails.username}
                 body={commentInfo.body}
