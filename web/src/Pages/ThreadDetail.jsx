@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Comment from "../Components/Comment";
 import Header from '../Components/Header';
+import { useToken,useUser } from '../Logic/UserContext';
 
 export default function ThreadDetail() {
     const { id } = useParams();
+    const user= useUser() ;
+    const token =  useToken() ;
+    console.log(`token: ${token}`) ;
     const [comments, setComments] = useState([]);
     const localUrl = "http://127.0.0.1:8000"
     const deployUrl = "https://asw-kbin.azurewebsites.net"
@@ -12,7 +16,7 @@ export default function ThreadDetail() {
     useEffect(() => {
         const fetchCommentData = async () => {
             try {
-                const commentsData = await getCommentsData();
+                const commentsData = await getCommentsData(token);
                 const commentsWithUserDetails = await Promise.all(commentsData.map(async (comment) => {
                     const userDetails = await getUserDetails(comment.author);
                     return { ...comment, userDetails };
@@ -24,15 +28,15 @@ export default function ThreadDetail() {
             }
         };
         fetchCommentData();
-    }, [id]);
+    }, [token,id]);
 
-    async function getCommentsData() {
+    async function getCommentsData(token ) {
         const endPoint = deployUrl + `/api/v1/threads/${id}/comments`;
         const response = await fetch(endPoint, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
+                'Authorization': `Token ${token}`,
             },
             credentials: 'include'
         });
@@ -48,7 +52,7 @@ export default function ThreadDetail() {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
+                'Authorization': `Token ${token}`,
             },
             credentials: 'include'
         });
@@ -67,7 +71,7 @@ export default function ThreadDetail() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token c390f5a512514367ed16e52f7851b554c888a0ca`,
+                    'Authorization': `Token ${token}`,
                 },
                 credentials: 'include'
             });
@@ -84,7 +88,7 @@ export default function ThreadDetail() {
 
     const handleDislike = async (commentId) => {
         try {
-            const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/dislike`, {
+            const response = await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/dislike`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
