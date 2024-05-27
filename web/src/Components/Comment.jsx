@@ -1,6 +1,7 @@
  import React from "react"
  export default function comment(props) {
-    const {comment_id,author_id,author,body,created_at,likes,dislikes,handleLike,handleDislike} = props ;
+    const {comment_id,author_id,author,body,created_at,likes,dislikes,boosts} = props ;
+    const {handleLike,handleDislike,handleBoost} = props ;
     return (
         <blockquote class="section comment entry-comment subject comment-level--1" id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
             <header>
@@ -30,6 +31,10 @@
 
             <footer>
                 <menu>
+                <a class="stretched-link" href="#" data-action="subject#getForm">reply</a>
+                <button class="boost-link stretched-link" type="submit" data-action="subject#favourite" onClick={handleBoost.bind(this,comment_id)}>
+                boost  <span class="" data-subject-target="upvoteCounter">({boosts})</span>
+                </button>
                     </menu>
                     <div data-subject-target="container" class="js-container">
                     </div>
