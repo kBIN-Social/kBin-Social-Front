@@ -18,7 +18,7 @@ export const UserContextProvider  = ({ children }) => {
   };
 
   useEffect(() => {
-    setAuthToken('c390f5a512514367ed16e52f7851b554c888a0ca');
+    setAuthToken('a2897695e694d0516c0df6256258421fedae101b');
   }, []); 
 
   async function getUserData(token) {

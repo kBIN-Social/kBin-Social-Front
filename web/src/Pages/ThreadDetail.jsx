@@ -3,11 +3,14 @@ import { useParams } from 'react-router-dom';
 import Comment from "../Components/Comment";
 import Header from '../Components/Header';
 import { useToken,useUser } from '../Logic/UserContext';
+import InputBox from '../Components/InputBox';
+import comment from '../Components/Comment';
 
 export default function ThreadDetail() {
     const { id } = useParams();
     const user= useUser() ;
     const token =  useToken() ;
+    const levels = {} ;
     console.log(`token: ${token}`) ;
     const [comments, setComments] = useState([]);
     const localUrl = "http://127.0.0.1:8000"
@@ -19,7 +22,7 @@ export default function ThreadDetail() {
                 const commentsData = await getCommentsData(token);
                 const commentsWithUserDetails = await Promise.all(commentsData.map(async (comment) => {
                     const userDetails = await getUserDetails(comment.author);
-                    return { ...comment, userId: userDetails.id,username: userDetails.username, avatar: userDetails.avatar  };
+                    return { ...comment, userId: userDetails.id,username: userDetails.username, avatar: userDetails.avatar,father: userDetails.author  };
                 }));
                 console.log(commentsWithUserDetails);
                 setComments(commentsWithUserDetails);
@@ -251,10 +254,36 @@ async function handleBoost(commentId) {
     }))
     const response = doBoost ? await boost(commentId) : await unboost(commentId);
 }
-
+async function handleMakeComment(text) {
+    const body = { body:text}
+    const response = await fetch(`${deployUrl}/api/v1/threads/${id}/comments`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        },
+        body : JSON.stringify(body),
+        credentials: 'include'
+    });
+    if(response.ok){
+        const newComment ={
+                thread: id ,
+                author : 2,
+                father : null,
+                body: text ,
+                likes : [],
+                dislikes : [],
+                boosts : [] 
+        } ;
+        const newArrayComments = [newComment,...comments];
+        setComments(newArrayComments);
+    }
+}
     const listComments = comments.map((commentInfo) => {
-        console.log(commentInfo.likes)
-        console.log( commentInfo)
+            const children = [] ;
+            for(let c of comments) {
+                if(c.father == commentInfo.id) children.push(c.id) ;
+            }
         return (
         <li key={commentInfo.id}>
             <Comment
@@ -267,6 +296,7 @@ async function handleBoost(commentId) {
                 likes ={commentInfo.likes.length}
                 dislikes={commentInfo.dislikes.length}
                 boosts = {commentInfo.boosts.length}
+                level = {children.length -1}
                 handleLike={handleLike}
                 handleDislike={handleDislike}
                 handleBoost = {handleBoost}
@@ -274,15 +304,15 @@ async function handleBoost(commentId) {
         </li> ) ;
     }
     );
-    if (!comments.length) {
-        return <div>Loading...</div>;
-    }
     return (
         <div id="thread_detail">
         <Header/> 
-            <ul>
+        <InputBox handleMakeComment={handleMakeComment}/> 
+        {comments.length ?
+            <section id="comments" class="comments entry-comments comments-tree show-comment-avatar" data-controller="subject-list comments-wrap" data-action="notifications:EntryCommentCreatedNotification@window->subject-list#increaseCounter">
                 {listComments}
-            </ul>
+            </section> :
+            <div>Loading...</div> } 
         </div>
     );
 }

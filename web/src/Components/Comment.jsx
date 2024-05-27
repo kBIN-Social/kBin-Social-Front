@@ -2,8 +2,9 @@
  export default function comment(props) {
     const {comment_id,author_id,author,body,created_at,likes,dislikes,boosts} = props ;
     const {handleLike,handleDislike,handleBoost} = props ;
+    const {level} = props ;
     return (
-        <blockquote class="section comment entry-comment subject comment-level--1" id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
+        <blockquote class={`section comment entry-comment subject comment-level--${level}`} id="entry-comment-6764615" data-controller="comment subject mentions" data-subject-parent-value="" data-action="">
             <header>
                 <a href= {`/Profile/${author_id}`} data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out" data-mentions-username-param="Norgur" class="user-inline" title="@Norgur@kbin.social">
                     {author}
@@ -39,10 +40,6 @@
                     <div data-subject-target="container" class="js-container">
                     </div>
             </footer>
-        </blockquote>
-       
-    
-    
+        </blockquote> 
 )
-
 }
