@@ -8,27 +8,17 @@ function OptionBar() {
     <menu class="options__main no-scroll">
         <li>
             <a href="/top" class="">
-                destacado
-            </a>
-        </li>
-        <li>
-            <a href="/" class="active">
-                popular
+                Top
             </a>
         </li>
         <li>
             <a href="/newest" class="">
-                más reciente
-            </a>
-        </li>
-        <li>
-            <a href="/active" class="">
-                activo
+                Recent
             </a>
         </li>
         <li>
             <a href="/commented" class="">
-                comentado
+                Commented
             </a>
         </li>
     </menu>

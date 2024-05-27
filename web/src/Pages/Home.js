@@ -1,5 +1,6 @@
 import Header from "../Components/Header";
 import OptionBar from "../Components/OptionBar";
+import ThreadContent from "../Components/ThreadContent"
 
 
 function Home() {
@@ -20,10 +21,10 @@ function Home() {
   }
 
   return (
-    <div className="App">
+    <div className="theme--dark" data-controller="kbin notifications" data-turbo="false">
       <Header/>
       <OptionBar/>
-      <h1>Home</h1>
+      <ThreadContent/>
     </div>
   );
 }
