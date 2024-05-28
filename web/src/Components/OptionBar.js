@@ -4,7 +4,6 @@ function OptionBar() {
   
   return (
     <aside class="options options--top" id="options">
-    <div></div>
     <menu class="options__main no-scroll">
         <li>
             <a href="/top" class="">
