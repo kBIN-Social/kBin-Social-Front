@@ -51,7 +51,7 @@ async function getThreads(user, token) {
 
   return (
   <div data-controller="subject-list" data-action="notifications:EntryCreatedNotification@window->subject-list#increaseCounter">
-    <OptionBar setOrderState={setOrderState}/>
+    <OptionBar setOrderState={setOrderState} setFilterState={setFilterState}/>
     {threadsData.length > 0 && (
         threadsData.map(thread => (
           <ThreadTemplate key={thread.id} thread={thread} user={user} />

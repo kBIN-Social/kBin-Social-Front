@@ -1,6 +1,6 @@
 import { useUser } from '../Logic/UserContext';
 
-function OptionBar({ setOrderState }) {
+function OptionBar({ setOrderState, setFilterState }) {
   
     return (
         <aside className="options options--top" id="options">
@@ -28,17 +28,17 @@ function OptionBar({ setOrderState }) {
               </button>
               <ul className="dropdown__menu">
                 <li>
-                  <a href="/hot/%E2%88%9E/all" className="active">
+                  <a onClick={() => setFilterState('all')} className="active">
                     all
                   </a>
                 </li>
                 <li>
-                  <a href="/hot/%E2%88%9E/links" className="">
+                  <a onClick={() => setFilterState('threads')} className="">
                     threads
                   </a>
                 </li>
                 <li>
-                  <a href="/hot/%E2%88%9E/articles" className="">
+                  <a onClick={() => setFilterState('links')} className="">
                     links
                   </a>
                 </li>
