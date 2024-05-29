@@ -81,7 +81,7 @@ async function getComments(user, token) {
     return response.json();
 }
 
-async function doLike(user, token) {
+async function doLike() {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/like_thread/`, {
       method: 'POST',
       headers: {
@@ -95,7 +95,7 @@ async function doLike(user, token) {
     return response.json();
 }
 
-async function doDislike(user, token) {
+async function doDislike() {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/dislike_thread/`, {
       method: 'POST',
       headers: {
@@ -109,8 +109,9 @@ async function doDislike(user, token) {
     return response.json();
 }
 
-async function doBoost(user, token) {
+async function doBoost() {
     try{
+        console.log('Token is', token)
         const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/boost_thread/`, {
         method: 'POST',
         headers: {
