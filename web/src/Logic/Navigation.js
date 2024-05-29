@@ -6,9 +6,11 @@ import NotFound from "../Pages/NotFound";
 import ThreadDetail from "../Pages/ThreadDetail";
 import Home from "../Pages/Home"
 import Login from "../Pages/Login";
+import Search from "../Pages/Search";
 
 export const nav = [
   { path: "/", name: "Home", element: <Home />, auth: false },
+  {path: "/search",name : "Login",element: <Search/> ,auth: false},
   { path: "/profile/:id", name: "Profile", element: <Profile />, auth: false },
   { path: "/profile/settings", name: "Settings", element: <ProfileEdit />, auth: true },
   {path: "/threads/:id", name: "ThreadDetail", element: <ThreadDetail></ThreadDetail>,auth:false },
