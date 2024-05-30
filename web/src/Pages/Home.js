@@ -23,7 +23,6 @@ function Home() {
   return (
     <div className="theme--dark" data-controller="kbin notifications" data-turbo="false">
       <Header/>
-      <OptionBar/>
       <ThreadContent/>
     </div>
   );

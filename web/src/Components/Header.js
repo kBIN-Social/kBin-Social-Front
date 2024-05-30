@@ -42,7 +42,7 @@ function Header() {
           <menu className="head-nav__menu">
             <li></li>
             <li>
-              <a href="/all" className="">
+              <a href="/" className="">
                 Threads
               </a>
             </li>
@@ -61,7 +61,7 @@ function Header() {
               aria-label="Search"
               title="Search"
             >
-              <i className="fa-solid fa-magnifying-glass"></i> Search
+              <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </li>
           
@@ -71,18 +71,13 @@ function Header() {
             </a>
             <ul className="dropdown__menu">
               <li>
-                <a href="/new" className="">
+                <a href="/newLink" className="">
                   Add new link
                 </a>
               </li>
               <li>
-                <a href="/new/article" className="">
+                <a href="/newThread" className="">
                   Add new thread
-                </a>
-              </li>
-              <li>
-                <a className="" href="/microblog">
-                  Add new post
                 </a>
               </li>
               <li>

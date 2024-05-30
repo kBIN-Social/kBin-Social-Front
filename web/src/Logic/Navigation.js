@@ -9,9 +9,13 @@ import Login from "../Pages/Login";
 import ListMagazines from "../Pages/ListMagazines";
 import MagazineForm from "../Components/MagazineForm";
 import MagazineDetail from "../Pages/MagazineDetail"
+import Search from "../Pages/Search";
+import NewLink from "../Pages/NewLink";
 
 export const nav = [
   { path: "/", name: "Home", element: <Home />, auth: false },
+  {path: "/search",name : "Login",element: <Search/> ,auth: false},
+  { path: "/newLink", name: "NewLink", element: <NewLink/>, auth: false },
   { path: "/profile/:id", name: "Profile", element: <Profile />, auth: false },
   { path: "/profile/settings", name: "Settings", element: <ProfileEdit />, auth: true },
   {path: "/threads/:id", name: "ThreadDetail", element: <ThreadDetail></ThreadDetail>,auth:false },
