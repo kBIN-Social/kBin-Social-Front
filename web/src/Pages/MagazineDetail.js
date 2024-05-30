@@ -13,7 +13,8 @@ export default function MagazineDetail() {
     const deployUrl = "https://asw-kbin.azurewebsites.net"
     const [sub, setSub] = useState(false)
     const [counter, setCounter] = useState(0)
-
+    const [postOrder, setOrder] = useState(null);
+    const [postFilter, setFilter] = useState(null);
     useEffect(() => {
         async function getMagazineData() {
             const endPoint = deployUrl + `/api/v1/magazines/${id}`;
@@ -32,14 +33,22 @@ export default function MagazineDetail() {
         }
     
         async function getMagazinePosts() {
-            const endPoint = deployUrl + `/api/v1/magazines/${id}/threads`;
+            var endPoint = deployUrl + `/api/v1/magazines/${id}/threads`;
+            if(postOrder) {
+                endPoint=endPoint.concat(`?order_by=${postOrder}`)
+                if(postFilter){
+                    endPoint=endPoint.concat(`&filter_by=${postFilter}`)
+                }
+            }
+            else if(postFilter){
+                endPoint=endPoint.concat(`?filter_by=${postFilter}`)
+            }
             const response = await fetch(endPoint, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log(response.content)
             if (!response.ok) {
                 throw new Error('Error fetching magazine data');
             }
@@ -52,7 +61,7 @@ export default function MagazineDetail() {
                 const postlist = []
                 MagazinePost.forEach(element => {
                     postlist.push(
-                    <ThreadTemplate thread={element} user={null} updateThread={setCounter}/>
+                    <ThreadTemplate thread={element} updateThread={setCounter}/>
     )});
                 setMagazine(MagazineData);
                 setPosts(postlist)
@@ -61,7 +70,7 @@ export default function MagazineDetail() {
             }
         };
         fetchCommentData();
-    }, [id, sub]);
+    }, [id, sub, counter, postOrder, postFilter]);
     
    
     return (
@@ -92,7 +101,7 @@ export default function MagazineDetail() {
                     </div>
                     
         </div>
-        <OptionBar setOrderState={setCounter} setFilterState={setCounter}/>
+        <OptionBar setOrderState={setOrder} setFilterState={setFilter}/>
         {posts}
         </div>
     );
