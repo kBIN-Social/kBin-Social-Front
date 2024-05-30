@@ -60,22 +60,6 @@ export default function ListComments(props) {
         return response.json();
     }
 
-    async function getThreadData() {
-        const endPoint = `${deployUrl}/api/v1/threads/${id}`;
-        const response = await fetch(endPoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            credentials: 'include'
-        });
-        if (!response.ok) {
-            throw new Error('Error fetching thread');
-        }
-        return response.json();
-    }
-
     async function getUserDetails(userId, token) {
         const endPoint = `${deployUrl}/api/v1/profile/${userId}`;
         const response = await fetch(endPoint, {
@@ -292,7 +276,7 @@ export default function ListComments(props) {
         if (response.ok) {
             const data = await response.json();
             const message = data.message;
-            const idMatch = data.message.match(/comment with id (\d+) created succesfully/);
+            const idMatch = message.match(/comment with id (\d+) created succesfully/);
             if (idMatch) {
                 const newCommentId = parseInt(idMatch[1], 10);
                 const newComment = {
@@ -343,39 +327,39 @@ export default function ListComments(props) {
             setComments(comments => deleteCommentAndChildren(comments, commentId));
         }
    }
+   function noFather(id) {
+    return id == null
+   }
 
-    function hasChildren(children = []) {
-        return children.length > 0 ;
-    }
+const renderComments = (commentList) => {
+    console.log("rendering comments...");
+    return commentList.map((commentInfo) => (
+        noFather(commentInfo.father) ? 
+            <li key={commentInfo.id}>
+                <Comment
+                    comment_id={commentInfo.id}
+                    author_id={commentInfo.userId}
+                    author={commentInfo.username}
+                    body={commentInfo.body}
+                    created_at={commentInfo.created_at}
+                    avatar={commentInfo.avatar}
+                    likes={commentInfo.likes.length}
+                    dislikes={commentInfo.dislikes.length}
+                    boosts={commentInfo.boosts.length}
+                    level={1}
+                    children={commentInfo.children}
+                    handleLike={handleLike}
+                    handleDislike={handleDislike}
+                    handleBoost={handleBoost}
+                    handleReply={handleMakeComment}
+                    handleDelete={handleDeleteComment}
+                />
+            </li>
+            :
+            null 
+    ));
+};
 
-
-    const renderComments = (commentList) => {
-        return commentList.map((commentInfo) => (
-            hasChildren(commentInfo.children) ? 
-                <li key={commentInfo.id}>
-                    <Comment
-                        comment_id={commentInfo.id}
-                        author_id={commentInfo.userId}
-                        author={commentInfo.username}
-                        body={commentInfo.body}
-                        created_at={commentInfo.created_at}
-                        avatar={commentInfo.avatar}
-                        likes={commentInfo.likes.length}
-                        dislikes={commentInfo.dislikes.length}
-                        boosts={commentInfo.boosts.length}
-                        level={1}
-                        children={commentInfo.children}
-                        handleLike={handleLike}
-                        handleDislike={handleDislike}
-                        handleBoost={handleBoost}
-                        handleReply={handleMakeComment}
-                        handleDelete = {handleDeleteComment}
-                    />
-                </li>
-                :
-                null 
-            ));
-        };
 
     return (
         <div id="thread_detail">
