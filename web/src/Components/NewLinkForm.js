@@ -79,7 +79,7 @@ function NewLinkForm() {
       
         // Modificar el formData para incluir estos valores
         formData.set('url', url);
-        formData.set('title', title);
+        formData.set('titol', title);
         formData.set('cos', content);
         formData.set('isLink', true);
         formData.set('magazine', selectedMagazine);
@@ -92,7 +92,7 @@ function NewLinkForm() {
             body: formData
         });
         if (!response.ok) {
-            throw new Error('Error fetching comments');
+            throw new Error('Error posting link');
         }
         navigate(`/`);
     }
