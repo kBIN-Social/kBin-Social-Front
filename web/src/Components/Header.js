@@ -78,12 +78,12 @@ function Header() {
             </a>
             <ul className="dropdown__menu">
               <li>
-                <a href="/threads/newLink" className="">
+                <a href="/newLink" className="">
                   Add new link
                 </a>
               </li>
               <li>
-                <a href="/threads/newThread" className="">
+                <a href="/newThread" className="">
                   Add new thread
                 </a>
               </li>

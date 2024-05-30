@@ -168,7 +168,7 @@ async function doBoost() {
                 aria-label="Favorito"
                 data-action="subject#vote"
                 >
-                <span>{thread.likes.length}</span> <span><i className="fa-solid fa-arrow-up"></i></span>
+                <span>{thread.likes.length}</span> <span>👍</span>
                 </button>
             </div>
             <div className="vote__down">
@@ -178,7 +178,7 @@ async function doBoost() {
                 aria-label="Dislike"
                 data-action="subject#vote"
                 >
-                <span>{thread.dislikes.length}</span> <span><i className="fa-solid fa-arrow-down"></i></span>
+                <span>{thread.dislikes.length}</span> <span>👎</span>
                 </button>
             </div>
       </aside>
