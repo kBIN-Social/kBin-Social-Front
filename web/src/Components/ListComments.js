@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { redirect, useParams } from 'react-router-dom';
 import Comment from "../Components/Comment";
-import Header from '../Components/Header';
 import { useToken, useUser } from '../Logic/UserContext';
-import InputBox from '../Components/InputBox';
-import ThreadTemplate from '../Components/ListComments';
-import ListComments from '../Components/ListComments';
 
-export default function ThreadDetail() {
+export default function ListComments(props) {
     const { id } = useParams();
     const user = useUser();
     const token = useToken();
-    const [comments, setComments] = useState([]);
-    const [threadInfo, setThreadInfo] = useState({});
-    const [threadAuthor,setThreadAuthor] = useState({});
+    const [comments, setComments] = useState(props.comments);
     //const [forceUpdate, setForceUpdate] = useState(0);
     const localUrl = "http://127.0.0.1:8000";
     const deployUrl = "https://asw-kbin.azurewebsites.net";
@@ -22,21 +16,6 @@ export default function ThreadDetail() {
     useEffect(() => {
         const fetchCommentData = async () => {
             try {
-                console.log("token");
-                console.log(token);
-                console.log('Fetching thread data');
-                // 1. Obtener datos del thread
-                const thread = await getThreadData( id);
-                console.log('Thread data:', thread);
-                setThreadInfo(thread);
-                console.log('Fetching thread author data');
-                // 2. Obtener datos del autor del thread
-                const authorInfo = await getUserDetails(thread.author, token);
-                console.log('Author data:', authorInfo);
-                setThreadAuthor(authorInfo);
-
-                console.log('Fetching comments data');
-                // 3. Obtener datos de los comentarios
                 const commentsData = await getCommentsData(token, id);
                 console.log('Comments data:', commentsData);
 
@@ -398,13 +377,15 @@ export default function ThreadDetail() {
             ));
         };
 
-    if (threadInfo == null) return redirect("NotFound404");
     return (
         <div id="thread_detail">
-            <Header />
-            <InputBox handleMakeComment={handleMakeComment} />
             {comments.length ?
-           <ListComments comments={comments}/>  : null }
+                <section id="comments" className="comments entry-comments comments-tree show-comment-avatar" data-controller="subject-list comments-wrap" data-action="notifications:EntryCommentCreatedNotification@window->subject-list#increaseCounter">
+                    <ul>
+                        {renderComments(comments)}
+                    </ul>
+                </section> :
+                <div>Loading...</div>}
         </div>
     );
 }
