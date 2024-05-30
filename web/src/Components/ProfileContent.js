@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useToken, useUser } from '../Logic/UserContext';
+import ThreadTemplate from './ThreadTemplate';
+import ListComments from './ListComments';
 
 function TokenSmall({ token }){
   return token ? <small>{`ApiKey: Token ${token}`}</small> : null;
@@ -15,6 +17,17 @@ function ProfileContent({user}) {
   const [filterState, setFilterState] = useState('top');
   const [elementState, setElementState] = useState('threads');
   const [threadState, setThreadState] = useState('all');
+  const [forceUpdate, setForceUpdate] = useState(0);
+
+  console.log(`Coments`)
+  console.log(comments)
+  console.log(`Threads`)
+  console.log(threads)
+  console.log(`Comments boosts`)
+  console.log(commentsBoosts)
+  console.log("Threads boosts")
+  console.log(threadsBoosts)
+
   
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +62,7 @@ function ProfileContent({user}) {
     }
     console.log(user)
     console.log(authUser)
-}, [user, token, filterState, elementState, threadState]);
+}, [user, token, filterState, elementState, threadState, forceUpdate]);
 
 async function getUserThreads(user, token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=${filterState}&filter_by=${threadState}`, {
@@ -142,7 +155,7 @@ async function getUserBoostsComments(user, token) {
               e.preventDefault();
               setElementState("threads")
             }} className={elementState === "threads" ? "active" : ""}>
-              {`threads (${threads.length})`}
+              {threads ? `threads (${threads.length})` : '0'}
             </a>
           </li>
           <li>
@@ -150,7 +163,7 @@ async function getUserBoostsComments(user, token) {
               e.preventDefault();
               setElementState("comments")
             }} className={elementState === "comments" ? "active" : ""}>
-              {`comments (${comments.length})`}
+              {comments ? `comments (${comments.length})` : '0'}
             </a>
           </li>
           { (user.id == authUser.id) ? (
@@ -159,7 +172,7 @@ async function getUserBoostsComments(user, token) {
               e.preventDefault();
               setElementState("boosts")
             }} className={elementState === "boosts" ? "active" : ""}>
-              {`boosts (${threadsBoosts.length + commentsBoosts.length})`}
+              {threadsBoosts || commentsBoosts ? `boosts (${(threadsBoosts.length + commentsBoosts.length) || 0})` : '0'}
             </a>
           </li>)
           : 
@@ -199,7 +212,7 @@ async function getUserBoostsComments(user, token) {
         <menu className="options__filters">
           <li className="dropdown">
             <button aria-label="Filter by type" title="Filter by type">
-              <i className="fa-solid fa-filter"></i> Filter by type
+              <span>🛠️</span>
             </button>
             <ul className="dropdown__menu">
               <li>
@@ -234,7 +247,37 @@ async function getUserBoostsComments(user, token) {
         id="content"
         className="overview subjects comments-tree comments show-comment-avatar show-post-avatar">
         <aside className="section section--muted">
-          <p>Empty</p>
+
+          <div>
+            {elementState === "threads" ? (
+              <div>
+                {threads && threads.length > 0 && (
+                  threads.map(thread => (
+                    <ThreadTemplate thread={thread} updateThread={setForceUpdate} />
+                  ))
+                )}
+              </div>
+            ) : elementState === "comments" ? (
+              <div>
+                {comments && comments.length > 0 && (
+                  <ListComments props={{...comments, userId : user.id, username : user.username, avatar : user.avatar}}/>
+                )}
+              </div>
+            ) : elementState === "boosts" ? (
+              <div>
+                {threads && threadsBoosts.length > 0 && (
+                  threadsBoosts.map(thread => (
+                    <ThreadTemplate thread={thread} updateThread={setForceUpdate} />
+                  ))
+                )}
+                {comments && comments.length > 0 && (
+                  <ListComments props={{...comments, userId : user.id, username : user.username, avatar : user.avatar}}/>
+                )}
+              </div> 
+            ) : (
+              <p>Empty</p>
+            )}
+          </div>
         </aside>
       </div>
     </main>
