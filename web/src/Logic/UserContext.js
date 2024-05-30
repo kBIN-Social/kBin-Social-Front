@@ -10,6 +10,7 @@ export const UserContextProvider  = ({ children }) => {
     setToken(newToken);
     try {
       const userData = await getUserData(newToken);
+      console.log(userData)
       setUser(userData);
       
     } catch (error) {
@@ -32,7 +33,6 @@ export const UserContextProvider  = ({ children }) => {
     if (!response.ok) {
       throw new Error('Error fetching user data');
     }
-    console.log(`Token ${token} | User ${response.json()}`)
     return response.json();
   }
 

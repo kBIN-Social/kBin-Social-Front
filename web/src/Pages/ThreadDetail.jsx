@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { redirect, useParams } from 'react-router-dom';
 import Comment from "../Components/Comment";
 import Header from '../Components/Header';
 import { useToken,useUser } from '../Logic/UserContext';
 import InputBox from '../Components/InputBox';
-import comment from '../Components/Comment';
+import ThreadTemplate from '../Components/ThreadTemplate'
 
 export default function ThreadDetail() {
     const { id } = useParams();
@@ -14,12 +14,17 @@ export default function ThreadDetail() {
     console.log(`token: ${token}`) ;
     const [comments, setComments] = useState([]);
     const localUrl = "http://127.0.0.1:8000"
+    const [threadInfo,setThreadInfo] = useState({});
     const deployUrl = "https://asw-kbin.azurewebsites.net"
 
     useEffect(() => {
         const fetchCommentData = async () => {
             try {
-                const commentsData = await getCommentsData(token);
+                const thread = await getThreadData(token);
+                setThreadInfo(thread);
+                const commentsData = await getCommentsData(token); 
+                console.log("Thread: ");
+                console.log(thread);
                 const commentsWithUserDetails = await Promise.all(commentsData.map(async (comment) => {
                     const userDetails = await getUserDetails(comment.author);
                     return { ...comment, userId: userDetails.id,username: userDetails.username, avatar: userDetails.avatar,father: userDetails.author  };
@@ -48,7 +53,22 @@ export default function ThreadDetail() {
         }
         return response.json();
     }
-
+    async function getThreadData(token) {
+        console.log("Token: " +token);
+        const endPoint = deployUrl + `/api/v1/threads/${id}`;
+        const response = await fetch(endPoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            },
+            credentials: 'include'
+        });
+        if (!response.ok) {
+            throw new Error('Error fetching thread');
+        }
+        return response.json();
+    }
     async function getUserDetails(userId) {
         const endPoint = deployUrl + `/api/v1/profile/${userId}`;
         const response = await fetch(endPoint, {
@@ -254,9 +274,10 @@ async function handleBoost(commentId) {
     }))
     const response = doBoost ? await boost(commentId) : await unboost(commentId);
 }
-async function handleMakeComment(text) {
+async function handleMakeComment(text,fatherId ) {
+    const url = !fatherId ?   `${deployUrl}/api/v1/threads/${id}/comments` : `${deployUrl}/api/v1/comments/${fatherId}/reply ` ;
     const body = { body:text}
-    const response = await fetch(`${deployUrl}/api/v1/threads/${id}/comments`, {
+    const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -266,10 +287,21 @@ async function handleMakeComment(text) {
         credentials: 'include'
     });
     if(response.ok){
+        const data = await response.json();
+        const message = data.message;
+        console.log(data);
+        const idMatch = data.message.match(/comment with id (\d+) created succesfully/);
+      if (idMatch) {
+        console.log(idMatch) ;
+        const id = parseInt(idMatch[1], 10);
+        console.log(id);
+      }
         const newComment ={
+                userId : user.id ,
+                username: user.username,
+                avatar : user.avatar ,
                 thread: id ,
-                author : 2,
-                father : null,
+                father : fatherId,
                 body: text ,
                 likes : [],
                 dislikes : [],
@@ -282,9 +314,11 @@ async function handleMakeComment(text) {
     const listComments = comments.map((commentInfo) => {
             const children = [] ;
             for(let c of comments) {
-                if(c.father == commentInfo.id) children.push(c.id) ;
+                if(c.id === commentInfo.father) children.push(c) ;
             }
-        return (
+            console.log("children");
+            console.log(children);
+        if(commentInfo.father == null ) return (
         <li key={commentInfo.id}>
             <Comment
                 comment_id = {commentInfo.id}
@@ -296,18 +330,22 @@ async function handleMakeComment(text) {
                 likes ={commentInfo.likes.length}
                 dislikes={commentInfo.dislikes.length}
                 boosts = {commentInfo.boosts.length}
-                level = {children.length -1}
+                level = {1}
+                children = {children}
                 handleLike={handleLike}
                 handleDislike={handleDislike}
                 handleBoost = {handleBoost}
+                handleReply = {handleMakeComment}
             />
         </li> ) ;
+        return null ;
     }
     );
+    if(threadInfo == null) return redirect("NotFound404");
     return (
         <div id="thread_detail">
-        <Header/> 
-        <InputBox handleMakeComment={handleMakeComment}/> 
+        <Header/>   
+        <InputBox handleMakeComment={handleMakeComment}/>
         {comments.length ?
             <section id="comments" class="comments entry-comments comments-tree show-comment-avatar" data-controller="subject-list comments-wrap" data-action="notifications:EntryCommentCreatedNotification@window->subject-list#increaseCounter">
                 {listComments}
