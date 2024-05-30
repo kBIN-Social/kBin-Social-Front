@@ -19,6 +19,6 @@ export const nav = [
   {path: "/login",name : "Login",element: <Login/> ,auth: false},
   {path: "/magazines/", name: "MagazineList", element: <ListMagazines/> ,auth:false },
   {path: "/magazines/:id", name: "MagazineDetail", element: <MagazineDetail/> ,auth:false },
-  {path: "/newMagazine", name: "MagazineCreation", element: <MagazineForm/> ,auth:true }
+  {path: "/newMagazine", name: "MagazineCreation", element: <MagazineForm/> ,auth:false }
 ];
 

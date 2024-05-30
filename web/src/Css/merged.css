@@ -19,3 +19,19 @@
 :root {
     background: #1c1c1c
 }
+.button-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #cacece;
+    font: inherit;
+    cursor: pointer;
+}
+.highlightClass {
+ background: none;
+    border: none;
+    padding: 0;
+    color: skyblue;
+    font: inherit;
+    cursor: pointer;
+}
