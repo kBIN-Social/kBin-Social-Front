@@ -91,9 +91,10 @@ function ListMagazines() {
     }
 export default ListMagazines;
 
-function SubButton({ magazine}) {
+function SubButton({ magazine }) {
     const user = useUser();
     const token = useToken();
+
     const handleSubscribe = async () => {
         try {
             await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
@@ -124,7 +125,7 @@ function SubButton({ magazine}) {
         }
     };
 
-    const isSubscribed = magazine.subscribers.includes(user);
+    const isSubscribed = Array.isArray(magazine.subscribers) && magazine.subscribers.includes(user);
 
     return isSubscribed ? (
         <button className="btn btn__secondary action" onClick={handleUnSubscribe}>
