@@ -83,7 +83,7 @@ function ListMagazines() {
                         </tr>
                     </thead>
                     <tbody>
-                    {{magazinelist}}
+                    {magazinelist}
                     </tbody>
                 </table>
             </div>
@@ -92,8 +92,8 @@ function ListMagazines() {
 export default ListMagazines;
 
 async function subbutton (magazine, user, token) {
-    const subscribe = ()=>{
-        const response = fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
+    const subscribe = async ()=>{
+        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -105,8 +105,8 @@ async function subbutton (magazine, user, token) {
             }
             return response.json();
     }
-    const unSubscribe = ()=>{
-        const response = fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe/me`, {
+    const unSubscribe = async ()=>{
+        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe/me`, {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
@@ -118,10 +118,10 @@ async function subbutton (magazine, user, token) {
             }
             return response.json();
     }
-    if (user in magazine.subscribers){ 
+    if (magazine.subscribers.includes(user)){ 
         return(
             
-            <button className="btn btn__secondary action" onClick={(e)=>{
+            <button className="btn btn__secondary action" onClick={async (e)=>{
                 e.preventDefault()
                 unSubscribe()
             }}>
@@ -130,7 +130,7 @@ async function subbutton (magazine, user, token) {
         )}
         else{
         return(
-            <button type="submit" class="btn btn__secondary action"onClick={(e)=>{
+            <button type="submit" class="btn btn__secondary action"onClick={async (e)=>{
                 e.preventDefault()
                 subscribe()
             }}>
