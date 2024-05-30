@@ -34,10 +34,31 @@ function SearchThreads({user}) {
     }
     console.log(user)
     console.log(authUser)
-}, [user, token, searchQuery]);
+}, [user, token, searchQuery, filterState, orderState]);
 
 async function getThreads(user, token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/search?query=${searchQuery}`, {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/search?content=${searchQuery}order_by=${orderState}&filter_by=${filterState}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching threads');
+  }
+  return response.json();
+}
+
+const handleSearch = (event) => {
+  event.preventDefault();
+  const formData = new FormData(event.target);
+  const query = formData.get('q');
+  setSearchQuery(query);
+};
+
+async function getThreads(user, token) {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/search?query=${searchQuery}&order_by=${orderState}&filter_by=${filterState}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -54,14 +75,14 @@ return (
   <div data-controller="subject-list" data-action="notifications:EntryCreatedNotification@window->subject-list#increaseCounter">
     <div className="section section--top">
       <div className="container">
-        <form method="get" action="/search">
-          <div className="flex" style={{ alignItems: 'center' }}>
-            <input defaultValue="" type="text" name="q" className="form-control" placeholder="Escribir término de búsqueda" autoFocus />
-            <button className="btn btn__primary" type="submit" aria-label="Búsqueda">
-              Search 🔍
-            </button>
-          </div>
-        </form>
+      <form onSubmit={handleSearch}>
+            <div className="flex" style={{ alignItems: 'center' }}>
+              <input defaultValue="" type="text" name="q" className="form-control" placeholder="Escribir término de búsqueda" autoFocus />
+              <button className="btn btn__primary" type="submit" aria-label="Búsqueda">
+                Search 🔍
+              </button>
+            </div>
+          </form>
       </div>
     </div>
     <OptionBar setOrderState={setOrderState} setFilterState={setFilterState} />

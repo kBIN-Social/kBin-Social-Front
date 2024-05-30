@@ -50,7 +50,7 @@ function Header() {
           <menu className="head-nav__menu">
             <li></li>
             <li>
-              <a href="/all" className="">
+              <a href="/" className="">
                 Threads
               </a>
             </li>
