@@ -1,25 +1,78 @@
 import React, { createContext, useState , useContext, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-const UserContext = createContext();
+export const UserContext = createContext();
 
 export const UserContextProvider  = ({ children }) => {
+  const [currentUserId, setCurrentUserId] = useState(null)
+
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
 
-  const setAuthToken = async (newToken) => {
+  const [token1, setToken1] = useState(null);
+  const [user1, setUser1] = useState(null);
+
+  const [token2, setToken2] = useState(null);
+  const [user2, setUser2] = useState(null);
+
+  const [token3, setToken3] = useState(null);
+  const [user3, setUser3] = useState(null);
+
+  const setCurrUser = (index) => {
+    if (index === 1) {
+      setUser(user1);
+      setToken(token1);
+      setCurrentUserId(1)
+    } else if (index === 2) {
+      setUser(user2);
+      setToken(token2);
+      setCurrentUserId(2)
+    } else {
+      setUser(user3);
+      setToken(token3);
+      setCurrentUserId(3)
+    }
+  };
+
+  const setUser1Token = async (newToken) => {
     setToken(newToken);
+    setToken1(newToken);
     try {
       const userData = await getUserData(newToken);
       console.log(userData)
       setUser(userData);
-      
+      setUser1(userData);  
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Error fetching user data 1:', error);
+    }
+  };
+
+  const setUser2Token = async (newToken) => {
+    setToken2(newToken);
+    try {
+      const userData = await getUserData(newToken);
+      console.log(userData)
+      setUser2(userData);
+    } catch (error) {
+      console.error('Error fetching user data 1:', error);
+    }
+  };
+
+  const setUser3Token = async (newToken) => {
+    setToken3(newToken);
+    try {
+      const userData = await getUserData(newToken);
+      setUser3(userData);
+    } catch (error) {
+      console.error('Error fetching user data 1:', error);
     }
   };
 
   useEffect(() => {
-    setAuthToken('a2897695e694d0516c0df6256258421fedae101b');
+    setUser1Token('ed1831e466b70ca383259dca3134b2fa48f2ded6');
+    setUser2Token('5c19068fa00265a05d52e497606a31c279658f7e');
+    setUser3Token('5c19068fa00265a05d52e497606a31c279658f7e');
+    setCurrentUserId(1)
   }, []); 
 
   async function getUserData(token) {
@@ -37,11 +90,12 @@ export const UserContextProvider  = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ token, setAuthToken, user }}>
+    <UserContext.Provider value={{ token, setCurrUser, user, currentUserId}}>
       {children}
     </UserContext.Provider>
   );
 };
 
+export const useUserId = () => useContext(UserContext).currentUserId
 export const useToken = () => useContext(UserContext).token;
 export const useUser = () => useContext(UserContext).user;

@@ -1,30 +1,22 @@
-import { useUser } from '../Logic/UserContext';
+import { useState, useContext } from 'react';
+import { useUser, useUserId } from '../Logic/UserContext';
+import { UserContext } from '../Logic/UserContext'
 
 function Header() {
   const user = useUser();
-  function isUser() {
-    if(user == null ) return null ;
-    else {
-      return (
-        <ul className="dropdown__menu">
-              <li>
+  console.log(user)
 
-                <a href={`/profile/${user.id}`} className="">
-                  Profile
-                </a>
-              </li>
-              <li>
-                <a href="/profile/settings" className="">
-                  Settings
-                </a>
-              </li>
-              <li>
-                <a href="/logout">Log out</a>
-              </li>
-            </ul>
-      ) ;
-    }
-  }
+  const currUserId = useUserId();
+  console.log(currUserId)
+
+  const { setCurrUser } = useContext(UserContext);
+
+  useState() 
+
+  
+
+  if(!user) return <h1>loading</h1>
+
   return (
     <header id="header" className="header">
       <div className="kbin-container">
@@ -72,6 +64,7 @@ function Header() {
               <i className="fa-solid fa-magnifying-glass"></i> Search
             </a>
           </li>
+          
           <li className="dropdown">
             <a href="/new" className="icon" aria-label="Add" title="Add">
               <i className="fa-solid fa-plus"></i> Add
@@ -99,12 +92,57 @@ function Header() {
               </li>
             </ul>
           </li>
+
+
           <li className="dropdown">
-            <a className=" login" href=  {user? `/profile/${user.id}`: "/login"} >
-              <span className="user-name">{user? user.username:"Login"}</span>
-            </a>
-           {isUser}
+          <a href="" className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>Profile</p></a>
+            <ul className="dropdown__menu">
+              <li>
+                <a href={`/profile/${user.id}`} className="">
+                  Profile
+                </a>
+              </li>
+              <li>
+                <a href="/profile/settings" className="">
+                  Settings
+                </a>
+              </li>
+            </ul>
           </li>
+
+
+
+          <li className="dropdown">
+            <a href="" className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>{`User ${currUserId}`}</p></a>
+            <ul className="dropdown__menu">
+              <li>
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setCurrUser(1)
+                }} className={currUserId === 1 ? "active" : ""}>
+                  User 1
+                </a>
+              </li>
+              <li>
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setCurrUser(2)
+                }} className={currUserId === 2 ? "active" : ""}>
+                  User 2
+                </a>
+              </li>
+              <li>
+                <a href="#" onClick={(e)=>{
+                  e.preventDefault();
+                  setCurrUser(3)
+                }} className={currUserId === 3 ? "active" : ""}>
+                  User 3
+                </a>
+              </li>
+            </ul>
+          </li>
+
+
         </menu>
       </div>
     </header>
