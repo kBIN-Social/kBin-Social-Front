@@ -3,82 +3,106 @@
 import Header from "../Components/Header";
 import { useToken } from '../Logic/UserContext';
 import { useUser } from '../Logic/UserContext';
-import React, { useState } from 'react';
-import {useEffect } from 'react';
+import React, { useState} from 'react';
+import {useContext, useEffect } from 'react';
 //import { useParams } from 'react-router-dom';
 
 
 function ListMagazines() {
     
-    //const { id } = useParams();
     const [magazines, setMagazines] = useState([]);
-    const [magazines_order, setMagOrder] = useState(null)
-
+    const [magazinesOrder, setMagOrder] = useState(null)
+    const [sub, setSub] = useState(false)
     useEffect(() => {
+        async function getMagazines() {
+            var addr = `https://asw-kbin.azurewebsites.net/api/v1/magazines`;
+            if(magazinesOrder) {
+                addr=addr.concat(`?order_by=${magazinesOrder}`)
+            }
+            const response = await fetch(addr, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+            });
+            if (!response.ok) {
+              throw new Error('Error fetching magazines');
+            }
+            const result = await response.json()
+            return result;
+        }
+
         const fetchMagazines =  async () => {
             try { 
                 const mag = await getMagazines();
-                console.log(mag)
                 setMagazines(mag);
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         }
         fetchMagazines();
-    }, [magazines_order]);
+    }, [magazinesOrder, sub]);
 
-    async function getMagazines(magazines_order) {
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Error fetching magazines');
-        }
-        const result = await response.json()
-        return result;
-    }
+   
     
     const magazinelist = []
     magazines.forEach((magazine, index) =>{
-        console.log(magazine)
         magazinelist.push(
         <tr key={magazine.id}>
-            <td><a href={`/magazines/${magazine.id}`} className="magazine-inline stretched-link">{magazine.title}</a></td>
+            <td><a href={`/magazines/${magazine.id}`} className="magazine-inline stretched-button">{magazine.title}</a></td>
             <td>{magazine.num_threads}</td>
             <td>{magazine.num_comments}</td>
             <td>
                 <aside className="magazine__subscribe">
                     <div className="action">
-                        <i className="fa-solid fa-users"></i><span>{magazine.num_subscriptors}</span>
+                      <span> 👥{magazine.num_subscriptors}</span>
                     </div>
-                    <SubButton magazine={magazine} />
+                    <SubButton magazine={magazine} setSub={setSub} />
                 </aside>
             </td>
         </tr>                  
     )});
     return (
-            <div>  
-                <Header/>
-                <table>
+        <div className="theme--dark">
+        <React.Fragment>
+        <Header/>
+        </React.Fragment>
+            <div className="section">  
+                
+                <table >
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th><button className='button-link' onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(magazinesOrder )
+                                    setMagOrder(null)
+                                }}>
+                                    Name </button></th>
                             <th>
-                                <a href="/magazines/?threads">
+                                <button className={magazinesOrder === 'threads' ? 'highlightClass' : 'button-link'} onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(magazinesOrder !== 'threads')
+                                    setMagOrder('threads')
+                                }}>
                                     Threads
-                                </a>
+                                </button>
                             </th>
                             <th>
-                                <a href="/magazines/?comments">
+                            <button className={magazinesOrder === 'comments' ? 'highlightClass' : 'button-link'} onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(magazinesOrder !== 'comments')
+                                    setMagOrder('comments')
+                                }}>
                                     Comments
-                                </a>
+                                </button>
                             </th>
                             <th>
-                                <a href="/magazines/?subscriptors">
-                                Subscriptions</a>
+                            <button className={magazinesOrder === 'suscriptors' ? 'highlightClass' : 'button-link'} onClick={(e)=>{
+                                    e.preventDefault()
+                                    if(magazinesOrder !== 'suscriptors')
+                                    setMagOrder('suscriptors')
+                                }}>
+                                Subscriptions</button>
                             </th>
                         </tr>
                     </thead>
@@ -87,46 +111,58 @@ function ListMagazines() {
                     </tbody>
                 </table>
             </div>
+            </div>
         );
     }
 export default ListMagazines;
 
-function SubButton({ magazine }) {
+function SubButton({ magazine, setSub}) {
     const user = useUser();
     const token = useToken();
-
+    //const [loading, setLoading] = useState(false);
     const handleSubscribe = async () => {
         try {
-            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
+            /*if(loading) return;
+            setLoading(true);*/
+            
+            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribers/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${token}`,
                 },
             });
-            // Optionally update state here to reflect subscription
+            
+            setSub(prev => !prev);
         } catch (error) {
             console.error('Error subscribing to magazine:', error);
         }
+        /*finally {
+            setLoading(false);
+        }*/
     };
 
     const handleUnSubscribe = async () => {
         try {
-            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe/me`, {
+            /*if(loading) return;
+            setLoading(true);*/
+            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribers/me`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${token}`,
                 },
             });
-            // Optionally update state here to reflect unsubscription
+            setSub(prev => !prev);
         } catch (error) {
             console.error('Error unsubscribing from magazine:', error);
         }
+        /*finally {
+            setLoading(false);
+        }*/
     };
-
-    const isSubscribed = Array.isArray(magazine.subscribers) && magazine.subscribers.includes(user);
-
+    
+    const isSubscribed = Array.isArray(magazine.subscribers) && user && magazine.subscribers.includes(user.id);
     return isSubscribed ? (
         <button className="btn btn__secondary action" onClick={handleUnSubscribe}>
             <i className="fa-sharp fa-solid fa-folder-plus"></i><span>Unsubscribe</span>
