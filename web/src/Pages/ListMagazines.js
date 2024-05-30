@@ -9,8 +9,7 @@ import {useEffect } from 'react';
 
 
 function ListMagazines() {
-    const user = useUser();
-    const token = useToken();
+    
     //const { id } = useParams();
     const [magazines, setMagazines] = useState([]);
     const [magazines_order, setMagOrder] = useState(null)
@@ -19,6 +18,7 @@ function ListMagazines() {
         const fetchMagazines =  async () => {
             try { 
                 const mag = await getMagazines();
+                console.log(mag)
                 setMagazines(mag);
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -51,10 +51,10 @@ function ListMagazines() {
             <td>{magazine.num_comments}</td>
             <td>
                 <aside className="magazine__subscribe">
-                    <div class="action">
+                    <div className="action">
                         <i className="fa-solid fa-users"></i><span>{magazine.num_subscriptors}</span>
                     </div>
-                    {subbutton (magazine, user, token)}
+                    <SubButton magazine={magazine} />
                 </aside>
             </td>
         </tr>                  
@@ -91,50 +91,48 @@ function ListMagazines() {
     }
 export default ListMagazines;
 
-async function subbutton (magazine, user, token) {
-    const subscribe = async ()=>{
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-              },
+function SubButton({ magazine}) {
+    const user = useUser();
+    const token = useToken();
+    const handleSubscribe = async () => {
+        try {
+            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
             });
-            if (!response.ok) {
-              throw new Error('Error fetching magazines');
-            }
-            return response.json();
-    }
-    const unSubscribe = async ()=>{
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe/me`, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-              },
+            // Optionally update state here to reflect subscription
+        } catch (error) {
+            console.error('Error subscribing to magazine:', error);
+        }
+    };
+
+    const handleUnSubscribe = async () => {
+        try {
+            await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${magazine.id}/subscribe/me`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
             });
-            if (!response.ok) {
-              throw new Error('Error fetching magazines');
-            }
-            return response.json();
-    }
-    if (magazine.subscribers.includes(user)){ 
-        return(
-            
-            <button className="btn btn__secondary action" onClick={async (e)=>{
-                e.preventDefault()
-                unSubscribe()
-            }}>
-                <i class="fa-sharp fa-solid fa-folder-plus"></i><span>Unsubscribe</span>
-            </button>
-        )}
-        else{
-        return(
-            <button type="submit" class="btn btn__secondary action"onClick={async (e)=>{
-                e.preventDefault()
-                subscribe()
-            }}>
-                <i class="fa-sharp fa-solid fa-folder-plus"></i><span>Subscribe</span>
-            </button>
-        )}
+            // Optionally update state here to reflect unsubscription
+        } catch (error) {
+            console.error('Error unsubscribing from magazine:', error);
+        }
+    };
+
+    const isSubscribed = magazine.subscribers.includes(user);
+
+    return isSubscribed ? (
+        <button className="btn btn__secondary action" onClick={handleUnSubscribe}>
+            <i className="fa-sharp fa-solid fa-folder-plus"></i><span>Unsubscribe</span>
+        </button>
+    ) : (
+        <button type="submit" className="btn btn__secondary action" onClick={handleSubscribe}>
+            <i className="fa-sharp fa-solid fa-folder-plus"></i><span>Subscribe</span>
+        </button>
+    );
 }
