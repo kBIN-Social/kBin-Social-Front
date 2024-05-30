@@ -4,8 +4,8 @@ import Comment from "../Components/Comment";
 import Header from '../Components/Header';
 import { useToken, useUser } from '../Logic/UserContext';
 import InputBox from '../Components/InputBox';
-import ThreadTemplate from '../Components/ListComments';
 import ListComments from '../Components/ListComments';
+import ThreadTemplate from '../Components/ThreadTemplate';
 
 export default function ThreadDetail() {
     const { id } = useParams();
@@ -14,6 +14,7 @@ export default function ThreadDetail() {
     const [comments, setComments] = useState([]);
     const [threadInfo, setThreadInfo] = useState({});
     const [threadAuthor,setThreadAuthor] = useState({});
+    const [counter, setCounter] = useState(0) ;
     //const [forceUpdate, setForceUpdate] = useState(0);
     const localUrl = "http://127.0.0.1:8000";
     const deployUrl = "https://asw-kbin.azurewebsites.net";
@@ -63,7 +64,7 @@ export default function ThreadDetail() {
         };
 
         fetchCommentData();
-    }, [token, id]);
+    }, [token, id,counter]);
     
     async function getCommentsData(token, id) {
         const endPoint = `${deployUrl}/api/v1/threads/${id}/comments`;
@@ -399,9 +400,11 @@ export default function ThreadDetail() {
         };
 
     if (threadInfo == null) return redirect("NotFound404");
+    console.log(threadInfo);
     return (
         <div id="thread_detail">
             <Header />
+            <ThreadTemplate thread={threadInfo} updateThread={setCounter}/>
             <InputBox handleMakeComment={handleMakeComment} />
             {comments.length ?
            <ListComments comments={comments}/>  : null }
