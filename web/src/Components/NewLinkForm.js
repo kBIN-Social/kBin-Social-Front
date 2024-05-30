@@ -73,7 +73,7 @@ function NewLinkForm() {
         const url = formDataTEMP.get('new_link[url]');
         const title = formDataTEMP.get('new_link[title]');
         const content = formDataTEMP.get('new_link[content]');
-        const magazine = formDataTEMP.get('new_link[magazine]');
+        //const magazine = formDataTEMP.get('new_link[magazine]');
 
         const formData = new FormData();
       
@@ -82,7 +82,7 @@ function NewLinkForm() {
         formData.set('title', title);
         formData.set('cos', content);
         formData.set('isLink', true);
-        formData.set('magazine', magazine);
+        formData.set('magazine', selectedMagazine);
 
         const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/`, {
             method: 'POST',
