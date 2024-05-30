@@ -87,24 +87,24 @@ function MagazineForm() {
                 <input type="text" id="magazine_name"
                         name="magazine[name]" required="required" data-controller="input-length autogrow"
                         data-action="input-length#updateDisplay" data-input-length-max-value="25" style={{ overflow: "hidden", height: "50px" }}
-                        onInput={updatenameLength}/>
+                        onInput={updatenameLength} maxLength= "25"/>
                     <div id="magazine_name_max_length" className="length-indicator"> {`0/25`}</div>
                 </div>
               <div><label htmlFor="magazine_title" className="required">Title</label>
               <input type="text" id="magazine_title"
                       name="magazine[title]" required="required" data-controller="input-length autogrow"
                       data-action="input-length#updateDisplay" data-input-length-max-value="50"
-                      style={{overflow: "hidden",height: "50px"}} onInput={updatetitleLength}></input>
+                      style={{overflow: "hidden",height: "50px"}} onInput={updatetitleLength} maxLength="50"></input>
                   <div id="magazine_title_max_length" className="length-indicator">{`0/50`}</div>
               </div>
               <div><textarea id="magazine_description" name="magazine[description]" placeholder="Description"
                       data-controller="input-length rich-textarea autogrow" data-action="input-length#updateDisplay"
-                      data-input-length-max-value="10000" style={{overflow: "hidden", height: "68px"}} onInput={updateDescriptionLength}></textarea>
+                      data-input-length-max-value="10000" style={{overflow: "hidden", height: "68px"}} maxLength ="10000" onInput={updateDescriptionLength}></textarea>
                   <div id="magazine_description_max_length" className="length-indicator">{`0/10000`}</div>
               </div>
               <div><textarea id="magazine_rules" name="magazine[rules]" placeholder="Rules"
                       data-controller="input-length rich-textarea autogrow" data-action="input-length#updateDisplay"
-                      data-input-length-max-value="10000" style={{overflow: "hidden", height: "68px"}} onInput={updateRulesLength}></textarea>
+                      data-input-length-max-value="10000" style={{overflow: "hidden", height: "68px"}} onInput={updateRulesLength} maxLength ="10000"></textarea>
                   <div id="magazine_rules_max_length" className="length-indicator">{`0/10000`}</div>
               </div>
 

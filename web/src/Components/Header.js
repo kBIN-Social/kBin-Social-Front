@@ -55,14 +55,7 @@ function Header() {
         </nav>
         <menu>
           <li>
-            <a
-              href="/search"
-              className="icon"
-              aria-label="Search"
-              title="Search"
-            >
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </a>
+          <a href="" className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>🔍</p></a>
           </li>
           
           <li className="dropdown">

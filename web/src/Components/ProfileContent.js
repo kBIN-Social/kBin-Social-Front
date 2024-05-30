@@ -10,7 +10,8 @@ function ProfileContent({user}) {
   const authUser = useUser();
   const [threads, setThreads] = useState([]);
   const [comments, setComments] = useState([]);
-  const [boosts, setBoosts] = useState([]);
+  const [threadsBoosts, setThreadsBoosts] = useState([]);
+  const [commentsBoosts, setCommentsBoosts] = useState([]);
   const [filterState, setFilterState] = useState('top');
   const [elementState, setElementState] = useState('threads');
   const [threadState, setThreadState] = useState('all');
@@ -31,10 +32,16 @@ function ProfileContent({user}) {
           console.error('Error fetching comments:', error);
         }
         try {
-          const boostsData = await getUserBoosts(user, token);
-          setBoosts(boostsData);
+          const boostsThreadsData = await getUserBoostsThreads(user, token);
+          setThreadsBoosts(boostsThreadsData);
         } catch (error) {
-          console.error('Error fetching boosts:', error);
+          console.error('Error fetching boostsThreadsData:', error);
+        }
+        try {
+          const boostsCommentsData = await getUserBoostsComments(user, token);
+          setCommentsBoosts(boostsCommentsData);
+        } catch (error) {
+          console.error('Error fetching boostsCommentsData:', error);
         }
     }
     if (token) {
@@ -42,10 +49,10 @@ function ProfileContent({user}) {
     }
     console.log(user)
     console.log(authUser)
-}, [user, token]);
+}, [user, token, filterState, elementState, threadState]);
 
 async function getUserThreads(user, token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=top`, {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=${filterState}&filter_by=${threadState}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +66,7 @@ async function getUserThreads(user, token) {
 }
 
 async function getUserComments(user, token) {
-  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=top`, {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=${filterState}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -72,8 +79,22 @@ async function getUserComments(user, token) {
   return response.json();
 }
 
-async function getUserBoosts(user, token) {
-  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts?order_by=top`, {
+async function getUserBoostsThreads(user, token) {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/threads?order_by=${filterState}&filter_by=${threadState}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Token ${token}`,
+    },
+  });
+  if (!response.ok) {
+    throw new Error('Error fetching comments');
+  }
+  return response.json();
+}
+
+async function getUserBoostsComments(user, token) {
+  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/comments?order_by=${filterState}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -138,7 +159,7 @@ async function getUserBoosts(user, token) {
               e.preventDefault();
               setElementState("boosts")
             }} className={elementState === "boosts" ? "active" : ""}>
-              {`boosts (${boosts.length})`}
+              {`boosts (${threadsBoosts.length + commentsBoosts.length})`}
             </a>
           </li>)
           : 

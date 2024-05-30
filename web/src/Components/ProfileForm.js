@@ -99,6 +99,7 @@ function ProfileForm() {
                     data-entry-link-create-target="user_about"
                     data-action="input-length#updateDisplay"
                     data-input-length-max-value="30"
+                    maxLength="30"
                     style={{ overflow: "hidden", height: "50px" }}
                     onInput={updateUsernameLength}
                   />
@@ -118,6 +119,7 @@ function ProfileForm() {
                     data-entry-link-create-target="user_about"
                     data-action="input-length#updateDisplay"
                     data-input-length-max-value="512"
+                    maxLength="512"
                     style={{ overflow: "hidden", height: "68px" }}
                     onInput={updateAboutLength}
                   ></textarea>
