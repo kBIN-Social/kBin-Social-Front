@@ -1,45 +1,41 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToken, useUser } from '../Logic/UserContext';
 
-function Thread({ thread }, {user}) {
-const token = useToken();
+function ThreadTemplate({ thread, user, updateThread }) {
+  const token = useToken();
   const authUser = useUser();
-  const [userData, setUserData] = useState([]);
-  const [magazineData, setMagazineData] = useState([]);
-  const [commentsData, setCommentsData] = useState([])
+  const [userData, setUserData] = useState({});
+  const [magazineData, setMagazineData] = useState({});
+  const [commentsData, setCommentsData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-
-        try {
-          const userData = await getUser(user, token);
-          setUserData(userData);
-        } catch (error) {
-          console.error('Error fetching threads:', error);
-        }
-        try {
-            const magazineData = await getMagazine(user, token);
-            setMagazineData(magazineData);
-          } catch (error) {
-            console.error('Error fetching threads:', error);
-          }
-        try {
-        const commentsData = await getComments(user, token);
+      try {
+        const userData = await getUser(token);
+        setUserData(userData);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+      try {
+        const magazineData = await getMagazine(token);
+        setMagazineData(magazineData);
+      } catch (error) {
+        console.error('Error fetching magazine data:', error);
+      }
+      try {
+        const commentsData = await getComments(token);
         setCommentsData(commentsData);
-        } catch (error) {
-        console.error('Error fetching threads:', error);
-        }
-    }
+      } catch (error) {
+        console.error('Error fetching comments data:', error);
+      }
+    };
+
     if (token) {
-        fetchData();
+      fetchData();
     }
-    console.log(user)
-    console.log(authUser)
-}, [user, token]);
+  }, [token]);
 
-
-async function getUser(user, token) {
+  async function getUser(token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${thread.author}`, {
       method: 'GET',
       headers: {
@@ -48,12 +44,12 @@ async function getUser(user, token) {
       },
     });
     if (!response.ok) {
-      throw new Error('Error fetching threads');
+      throw new Error('Error fetching user data');
     }
     return response.json();
-}
+  }
 
-async function getMagazine(user, token) {
+  async function getMagazine(token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${thread.magazine}`, {
       method: 'GET',
       headers: {
@@ -62,12 +58,12 @@ async function getMagazine(user, token) {
       },
     });
     if (!response.ok) {
-      throw new Error('Error fetching threads');
+      throw new Error('Error fetching magazine data');
     }
     return response.json();
-}
+  }
 
-async function getComments(user, token) {
+  async function getComments(token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/comments`, {
       method: 'GET',
       headers: {
@@ -76,62 +72,67 @@ async function getComments(user, token) {
       },
     });
     if (!response.ok) {
-      throw new Error('Error fetching threads');
+      throw new Error('Error fetching comments data');
     }
     return response.json();
-}
+  }
 
-async function doLike() {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/like_thread/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching threads');
-    }
-    return response.json();
-}
-
-async function doDislike() {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/dislike_thread/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching threads');
-    }
-    return response.json();
-}
-
-async function doBoost() {
-    try{
-        console.log('Token is', token)
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/boost_thread/`, {
+  async function doLike() {
+    try {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/like_thread/`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
         },
-        });
-        if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error response:', errorData);
-        throw new Error('Error fetching threads');
-        }
-        return response.json();
+      });
+      if (!response.ok) {
+        throw new Error('Error liking thread');
+      }
+      const updatedThread = await response.json();
+      updateThread(updatedThread);
+    } catch (error) {
+      console.error('Error in doLike:', error);
     }
-    catch(error){
-        console.error('Error in doBoost:', error);
-        throw error;
-    }
-}
+  }
 
+  async function doDislike() {
+    try {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/dislike_thread/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error disliking thread');
+      }
+      const updatedThread = await response.json();
+      updateThread(updatedThread);
+    } catch (error) {
+      console.error('Error in doDislike:', error);
+    }
+  }
+
+  async function doBoost() {
+    try {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/boost_thread/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error boosting thread');
+      }
+      const updatedThread = await response.json();
+      updateThread(updatedThread);
+    } catch (error) {
+      console.error('Error in doBoost:', error);
+    }
+  }
 
   return (
     <article className="entry section subject no-image">
@@ -162,25 +163,25 @@ async function doBoost() {
       </aside>
       <aside className="vote">
         <div className="vote__up">
-                <button
-                onClick={() => doLike()}
-                title="Favorito"
-                aria-label="Favorito"
-                data-action="subject#vote"
-                >
-                <span>{thread.likes.length}</span> <span>👍</span>
-                </button>
-            </div>
-            <div className="vote__down">
-                <button
-                onClick={() => doDislike()}
-                title="Dislike"
-                aria-label="Dislike"
-                data-action="subject#vote"
-                >
-                <span>{thread.dislikes.length}</span> <span>👎</span>
-                </button>
-            </div>
+          <button
+            onClick={doLike}
+            title="Favorito"
+            aria-label="Favorito"
+            data-action="subject#vote"
+          >
+            <span>{thread.likes.length}</span> <span>👍</span>
+          </button>
+        </div>
+        <div className="vote__down">
+          <button
+            onClick={doDislike}
+            title="Dislike"
+            aria-label="Dislike"
+            data-action="subject#vote"
+          >
+            <span>{thread.dislikes.length}</span> <span>👎</span>
+          </button>
+        </div>
       </aside>
       <footer>
         <menu>
@@ -189,9 +190,9 @@ async function doBoost() {
               <span>{commentsData.length}</span> comentarios
             </a>
           </li>
-          <li>   
+          <li>
             <button onClick={doBoost} type="submit" className="boost-link">
-            impulsar ({thread.boost.length})
+              impulsar ({thread.boost.length})
             </button>
           </li>
         </menu>
@@ -200,4 +201,4 @@ async function doBoost() {
   );
 }
 
-export default Thread;
+export default ThreadTemplate;
