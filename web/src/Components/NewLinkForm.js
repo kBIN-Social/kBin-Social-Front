@@ -1,11 +1,32 @@
 import React from "react";
 import { useToken, useUser } from '../Logic/UserContext';
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
 
 function NewLinkForm() {
     const token = useToken();
     const user = useUser();
     const navigate = useNavigate();
+    const [magazines, setMagazines] = useState([]);
+    const [selectedMagazine, setSelectedMagazine] = useState('');
+
+    async function fetchMagazines(user, token) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching threads');
+      }
+      return response.json();
+  }
+
+    const handleMagazineChange = (event) => {
+      setSelectedMagazine(event.target.value);
+    };
 
     function updateUsernameLength() {
         const input = document.getElementById('user_basic_username'); // Obtener el input del username
@@ -74,7 +95,7 @@ function NewLinkForm() {
                 <div className="user-main" id="content">
                   <div>
                     <div className="row">
-                      <h1>New Link</h1>
+      
                     </div>
                   </div>
                 </div>
@@ -83,14 +104,14 @@ function NewLinkForm() {
           </div>
           <div id="content" className="section">
             <div className="container">
-              <h1 hidden="">Profile</h1>
+              <h1 hidden="">New Link</h1>
               <form
                 name="user_basic"
                 method="post"
                 encType="multipart/form-data"
               >
                 <div>
-                  <label htmlFor="user_basic_username">Username</label>
+                  <label htmlFor="user_basic_username">URL</label>
                   <input
                     type="text"
                     id="user_basic_username"
@@ -102,13 +123,28 @@ function NewLinkForm() {
                     style={{ overflow: "hidden", height: "50px" }}
                     onInput={updateUsernameLength}
                   />
+                </div>
+                <label htmlFor="user_basic_username">Title</label>
+                <div>
+                  <textarea
+                    id="user_basic_about"
+                    name="user_basic[about]"
+                    placeholder="About"
+                    data-controller="input-length rich-textarea autogrow"
+                    data-entry-link-create-target="user_about"
+                    data-action="input-length#updateDisplay"
+                    data-input-length-max-value="512"
+                    style={{ overflow: "hidden", height: "68px" }}
+                    onInput={updateAboutLength}
+                  ></textarea>
                   <div
-                    id="user_basic_username_max_length"
+                    id="user_basic_about_max_length"
                     className="length-indicator"
                   >
-                    {`0/30`}
+                    {`0/512`}
                   </div>
                 </div>
+                <label htmlFor="user_basic_username">Content</label>
                 <div>
                   <textarea
                     id="user_basic_about"
@@ -129,20 +165,21 @@ function NewLinkForm() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="user_basic_avatar">Avatar</label>
-                  <input
-                    type="file"
-                    id="user_basic_avatar"
-                    name="user_basic[avatar]"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="user_basic_cover">Cover</label>
-                  <input
-                    type="file"
-                    id="user_basic_cover"
-                    name="user_basic[cover]"
-                  />
+                  <label htmlFor="magazine">Selecciona una revista</label>
+                  <select
+                    id="magazine"
+                    name="magazine"
+                    value={selectedMagazine}
+                    onChange={handleMagazineChange}
+                    className="form-control"
+                  >
+                    <option value="">Selecciona una revista</option>
+                    {magazines.map((magazine) => (
+                      <option key={magazine.id} value={magazine.id}>
+                        {magazine.nom}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="row actions">
                   <div>

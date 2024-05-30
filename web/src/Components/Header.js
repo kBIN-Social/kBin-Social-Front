@@ -69,7 +69,7 @@ function Header() {
               aria-label="Search"
               title="Search"
             >
-              <i className="fa-solid fa-magnifying-glass"></i> Search
+              <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </li>
           <li className="dropdown">
