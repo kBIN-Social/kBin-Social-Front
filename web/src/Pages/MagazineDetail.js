@@ -12,6 +12,7 @@ export default function MagazineDetail() {
     const [magazine, setMagazine] = useState([]);
     const deployUrl = "https://asw-kbin.azurewebsites.net"
     const [sub, setSub] = useState(false)
+    const [counter, setCounter] = useState(0)
 
     useEffect(() => {
         async function getMagazineData() {
@@ -51,7 +52,7 @@ export default function MagazineDetail() {
                 const postlist = []
                 MagazinePost.forEach(element => {
                     postlist.push(
-                    <ThreadTemplate thread={element} user={null}/>
+                    <ThreadTemplate thread={element} user={null} updateThread={setCounter}/>
     )});
                 setMagazine(MagazineData);
                 setPosts(postlist)
@@ -91,7 +92,7 @@ export default function MagazineDetail() {
                     </div>
                     
         </div>
-        <OptionBar/>
+        <OptionBar setOrderState={setCounter} setFilterState={setCounter}/>
         {posts}
         </div>
     );
