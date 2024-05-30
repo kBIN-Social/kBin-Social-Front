@@ -19,7 +19,7 @@ export const UserContextProvider  = ({ children }) => {
   };
 
   useEffect(() => {
-    setAuthToken('a2897695e694d0516c0df6256258421fedae101b');
+    setAuthToken('bd6c1e7602d2a0a1551abb5386ec262d4b382276');
   }, []); 
 
   async function getUserData(token) {
