@@ -20,6 +20,7 @@ export default function Comment(props) {
                 <Comment
                     comment_id={commentInfo.id}
                     author_id={commentInfo.user_id}
+                    username  = {commentInfo.username}
                     author={commentInfo.username}
                     body={commentInfo.body}
                     created_at={commentInfo.created_at}
@@ -75,7 +76,7 @@ export default function Comment(props) {
                             </a>
                         </li>
                         <li>
-                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleBoost(this,comment_id)}}>
+                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleDelete(this,comment_id)}}>
                                 update 
                             </a>
                         </li>

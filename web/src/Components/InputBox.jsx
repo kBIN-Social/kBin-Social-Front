@@ -13,7 +13,7 @@ export default function InputBox({handleMakeComment,father_id }) {
         <br/> 
         <button type="submit" id="entry_comment_665439133bbb14.06536950_submit" name="entry_comment[submit]" 
         class="btn btn__primary" data-action="subject#sendForm"
-        onClick={handleMakeComment.bind(this,text,father_id)}
+        onClick={(e) =>{e.stopPropagation();handleMakeComment(text,father_id)}}
         >Add comment</button>
         </div> 
     )
