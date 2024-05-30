@@ -82,13 +82,14 @@ function MagazineForm() {
         <Header/>
     <div className='section'>
           <form name="magazine" method="post" encType="multipart/form-data">
-              <div><label htmlFor="magazine_name" className="required">Name</label>
-              <input type="text" id="magazine_name"
-                      name="magazine[name]" required="required" data-controller="input-length autogrow"
-                      data-action="input-length#updateDisplay" data-input-length-max-value="25" style={{ overflow: "hidden", height: "50px" }}
-                      onInput={updatenameLength}></input>
-                  <div id="magazine_name_max_length" className="length-indicator"> {`0/25`}</div>
-              </div>
+              <div>
+                <label htmlFor="magazine_name" className="required">Name</label>
+                <input type="text" id="magazine_name"
+                        name="magazine[name]" required="required" data-controller="input-length autogrow"
+                        data-action="input-length#updateDisplay" data-input-length-max-value="25" style={{ overflow: "hidden", height: "50px" }}
+                        onInput={updatenameLength}/>
+                    <div id="magazine_name_max_length" className="length-indicator"> {`0/25`}</div>
+                </div>
               <div><label htmlFor="magazine_title" className="required">Title</label>
               <input type="text" id="magazine_title"
                       name="magazine[title]" required="required" data-controller="input-length autogrow"
