@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useToken, useUser } from '../Logic/UserContext';
 
-function ThreadTemplate({ thread, user, updateThread }) {
+function ThreadTemplate({ thread, updateThread }) {
   const token = useToken();
   const authUser = useUser();
   const [userData, setUserData] = useState({});
@@ -90,7 +90,7 @@ function ThreadTemplate({ thread, user, updateThread }) {
         throw new Error('Error liking thread');
       }
       const updatedThread = await response.json();
-      updateThread(updatedThread);
+      updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doLike:', error);
     }
@@ -109,7 +109,7 @@ function ThreadTemplate({ thread, user, updateThread }) {
         throw new Error('Error disliking thread');
       }
       const updatedThread = await response.json();
-      updateThread(updatedThread);
+      updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doDislike:', error);
     }
@@ -128,7 +128,7 @@ function ThreadTemplate({ thread, user, updateThread }) {
         throw new Error('Error boosting thread');
       }
       const updatedThread = await response.json();
-      updateThread(updatedThread);
+      updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doBoost:', error);
     }
@@ -187,12 +187,12 @@ function ThreadTemplate({ thread, user, updateThread }) {
         <menu>
           <li>
             <a href={`/threads/${thread.id}`}>
-              <span>{commentsData.length}</span> comentarios
+              <span>{commentsData.length}</span> comments
             </a>
           </li>
           <li>
             <button onClick={doBoost} type="submit" className="boost-link">
-              impulsar ({thread.boost.length})
+              boost ({thread.boost.length})
             </button>
           </li>
         </menu>

@@ -40,17 +40,13 @@ function ThreadContent({ user }) {
     return response.json();
   }
 
-  const updateThread = (updatedThread) => {
-    setThreads(prevThreads => prevThreads.map(thread => thread.id === updatedThread.id ? updatedThread : thread));
-    setForceUpdate(prev => prev + 1);
-  };
-
+  
   return (
     <div data-controller="subject-list" data-action="notifications:EntryCreatedNotification@window->subject-list#increaseCounter">
       <OptionBar setOrderState={setOrderState} setFilterState={setFilterState} />
       {threadsData.length > 0 && (
         threadsData.map(thread => (
-          <ThreadTemplate key={thread.id} thread={thread} user={user} updateThread={updateThread} />
+          <ThreadTemplate key={thread.id} thread={thread} updateThread={setForceUpdate} />
         ))
       )}
     </div>
