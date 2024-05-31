@@ -30,6 +30,61 @@ function ProfileContent({user}) {
 
   
   useEffect(() => {
+    async function getUserThreads(user, token) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=${filterState}&filter_by=${threadState}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching threads');
+      }
+      return response.json();
+  }
+  
+  async function getUserComments(user, token) {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=${filterState}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error fetching comments');
+    }
+    return response.json();
+  }
+  
+  async function getUserBoostsThreads(user, token) {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/threads?order_by=${filterState}&filter_by=${threadState}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error fetching comments');
+    }
+    return response.json();
+  }
+  
+  async function getUserBoostsComments(user, token) {
+    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/comments?order_by=${filterState}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Error fetching comments');
+    }
+    return response.json();
+  }
     const fetchData = async () => {
 
         try {
@@ -62,63 +117,9 @@ function ProfileContent({user}) {
     }
     console.log(user)
     console.log(authUser)
-}, [user, token, filterState, elementState, threadState, forceUpdate]);
+}, [user, token, filterState, elementState, threadState, forceUpdate, authUser]);
 
-async function getUserThreads(user, token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/threads?order_by=${filterState}&filter_by=${threadState}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching threads');
-    }
-    return response.json();
-}
 
-async function getUserComments(user, token) {
-  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/comments?order_by=${filterState}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Token ${token}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Error fetching comments');
-  }
-  return response.json();
-}
-
-async function getUserBoostsThreads(user, token) {
-  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/threads?order_by=${filterState}&filter_by=${threadState}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Token ${token}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Error fetching comments');
-  }
-  return response.json();
-}
-
-async function getUserBoostsComments(user, token) {
-  const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${user.id}/boosts/comments?order_by=${filterState}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Token ${token}`,
-    },
-  });
-  if (!response.ok) {
-    throw new Error('Error fetching comments');
-  }
-  return response.json();
-}
 
   return (
 <div id="middle" className="page-user page-user-overview">
@@ -127,12 +128,12 @@ async function getUserBoostsComments(user, token) {
       <div className="section section--top">
         <div className="user-box">
           <div className="with-cover with-avatar">
-              <img height="220" width="100%" className="cover" src={user.cover}/>
+              <img height="220" width="100%" className="cover" src={user.cover} alt='cover'/>
               <div className="user-main" id="content">
                   <div>
                       <div className="row">
                           <figure>
-                          <img width="100" height="100" style={{maxWidth: '100px', maxHeight: '100px'}} src={user.avatar}/>
+                          <img width="100" height="100" style={{maxWidth: '100px', maxHeight: '100px'}} src={user.avatar} alt='avatar'/>
                           </figure>
                           <h1>{user.username}</h1>
                           <TokenSmall/>
@@ -151,29 +152,29 @@ async function getUserBoostsComments(user, token) {
         <div></div>
         <menu className="options__main">
           <li>
-            <a href="#" onClick={(e)=>{
+            <button onClick={(e)=>{
               e.preventDefault();
               setElementState("threads")
             }} className={elementState === "threads" ? "active" : ""}>
               {threads ? `threads (${threads.length})` : '0'}
-            </a>
+            </button>
           </li>
           <li>
-            <a href="#" onClick={(e)=>{
+            <button onClick={(e)=>{
               e.preventDefault();
               setElementState("comments")
             }} className={elementState === "comments" ? "active" : ""}>
               {comments ? `comments (${comments.length})` : '0'}
-            </a>
+            </button>
           </li>
-          { (user.id == authUser.id) ? (
+          { (user.id === authUser.id) ? (
             <li>
-            <a href="#" onClick={(e)=>{
+            <button onClick={(e)=>{
               e.preventDefault();
               setElementState("boosts")
             }} className={elementState === "boosts" ? "active" : ""}>
               {threadsBoosts || commentsBoosts ? `boosts (${(threadsBoosts.length + commentsBoosts.length) || 0})` : '0'}
-            </a>
+            </button>
           </li>)
           : 
             null
@@ -185,28 +186,28 @@ async function getUserBoostsComments(user, token) {
         <div></div>
         <menu className="options__main no-scroll">
           <li>
-            <a href="#" onClick={(e)=>{
+            <button onClick={(e)=>{
               e.preventDefault();
               setFilterState("top")
             }} className={filterState === "top" ? "active" : ""}>
               top
-            </a>
+            </button>
           </li>
           <li>
-          <a href="#" onClick={(e)=>{
+          <button onClick={(e)=>{
               e.preventDefault();
               setFilterState("recent")
             }} className={filterState === "recent" ? "active" : ""}>
               recent
-            </a>
+            </button>
           </li>
           <li>
-          <a href="#" onClick={(e)=>{
+          <button onClick={(e)=>{
               e.preventDefault();
               setFilterState("commented")
             }} className={filterState === "commented" ? "active" : ""}>
               commented
-            </a>
+            </button>
           </li>
         </menu>
         <menu className="options__filters">
@@ -216,28 +217,28 @@ async function getUserBoostsComments(user, token) {
             </button>
             <ul className="dropdown__menu">
               <li>
-                <a href="#" onClick={(e)=>{
+                <button onClick={(e)=>{
                   e.preventDefault();
                   setThreadState("all")
                 }} className={threadState === "all" ? "active" : ""}>
                   all
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" onClick={(e)=>{
+                <button onClick={(e)=>{
                   e.preventDefault();
                   setThreadState("links")
                 }} className={threadState === "links" ? "active" : ""}>
                   links
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" onClick={(e)=>{
+                <button onClick={(e)=>{
                   e.preventDefault();
                   setThreadState("threads")
                 }} className={threadState === "threads" ? "active" : ""}>
                   threads
-                </a>
+                </button>
               </li>
             </ul>
           </li>

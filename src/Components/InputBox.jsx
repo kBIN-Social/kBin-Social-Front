@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from "react";
+import React,{useState} from "react";
 export default function InputBox({actionName="action",action,father_id,previousText }) {
     console.log("Pare: "+ father_id)
     const[text,setText] = useState(previousText) ;

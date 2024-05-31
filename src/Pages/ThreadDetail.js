@@ -16,6 +16,21 @@ export default function ThreadDetail() {
     const deployUrl = "https://asw-kbin.azurewebsites.net";
 
     useEffect(() => {
+        async function getThreadData(id) {
+            const endPoint = `${deployUrl}/api/v1/threads/${id}`;
+            const response = await fetch(endPoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${token}`,
+                },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error('Error fetching thread');
+            }
+            return response.json();
+        }
         const fetchCommentData = async () => {
             try {
                 console.log("fetching threads...");
@@ -47,21 +62,6 @@ export default function ThreadDetail() {
         return response.json();
     }
 
-    async function getThreadData(id) {
-        const endPoint = `${deployUrl}/api/v1/threads/${id}`;
-        const response = await fetch(endPoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            credentials: 'include'
-        });
-        if (!response.ok) {
-            throw new Error('Error fetching thread');
-        }
-        return response.json();
-    }
 
     async function handleMakeComment(text, fatherId) {
         const url = !fatherId

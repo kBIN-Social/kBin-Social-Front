@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { json, redirect, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Comment from "./Comment";
 import { useToken, useUser } from '../Logic/UserContext';
 
@@ -9,7 +9,7 @@ export default function ListComments({commentsData }) {
     const token = useToken();
     const [comments, setComments] = useState([]);
     //const [forceUpdate, setForceUpdate] = useState(0);
-    const localUrl = "http://127.0.0.1:8000";
+    //const localUrl = "http://127.0.0.1:8000";
     const deployUrl = "https://asw-kbin.azurewebsites.net";
     useEffect(() => {
         const fetchCommentData = async () => {
@@ -41,7 +41,7 @@ export default function ListComments({commentsData }) {
         };
 
         fetchCommentData();
-    }, [token, id]);
+    }, [token, id, comments, commentsData]);
 
     async function getUserDetails(userId, token) {
         const endPoint = `${deployUrl}/api/v1/profile/${userId}`;
@@ -114,19 +114,15 @@ export default function ListComments({commentsData }) {
                 }
                 return { ...comment };
             }));
-            if (state == 0) await like(commentId);
-            else if (state == 1) await remove(commentId);
-            else if (state == 2) {
+            if (state === 0) await like(commentId);
+            else if (state === 1) await remove(commentId);
+            else if (state === 2) {
                 await remove(commentId);
                 await like(commentId);
             }
         } catch (error) {
             console.error('Error liking comment:', error);
         }
-    }
-
-    async function handleDislike(commentId) {
-        console.log("dislike: " + commentId);
     }
 
     async function dislike(commentId) {
@@ -173,9 +169,9 @@ export default function ListComments({commentsData }) {
                 }
                 return { ...comment };
             }));
-            if (state == 0) await dislike(commentId);
-            else if (state == 1) await remove(commentId);
-            else if (state == 2) {
+            if (state === 0) await dislike(commentId);
+            else if (state === 1) await remove(commentId);
+            else if (state === 2) {
                 await remove(commentId);
                 await dislike(commentId);
             }
@@ -229,12 +225,12 @@ export default function ListComments({commentsData }) {
             }
             return comment;
         }));
-        const response = doBoost ? await boost(commentId) : await unboost(commentId);
+        return doBoost ? await boost(commentId) : await unboost(commentId);
     }
 
     function addChildComment(parentId, newComment) {
             setComments(comments.map((comment) => {
-                if(comment.id == parentId) {
+                if(comment.id === parentId) {
                     comment.children = [newComment,...comment.children];
                 }
                 return {...comment}
@@ -293,7 +289,7 @@ export default function ListComments({commentsData }) {
             },
             credentials: 'include'
         });
-        if(response.status == 401) {
+        if(response.status === 401) {
             window.alert("You are not the author of this comment!");
         }
         else if(response.ok) {
@@ -325,12 +321,12 @@ export default function ListComments({commentsData }) {
         body: JSON.stringify(body),
         credentials: 'include'
     });
-    if(response.status == 401) {
+    if(response.status === 401) {
         window.alert("You are not the author of this comment!");
     }
     else if(response.ok) {
         setComments(comments.map((c)=>{
-            if(c.id == commentId) c.body = text ;
+            if(c.id === commentId) c.body = text ;
             return c ;
         }))
     }

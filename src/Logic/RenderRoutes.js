@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { UserContext, useUser } from "./UserContext";
+//import { UserContext} from "./UserContext";
+import { useUser } from "./UserContext";
 import { nav } from "./Navigation";
 
 export const RenderRoutes = () => {

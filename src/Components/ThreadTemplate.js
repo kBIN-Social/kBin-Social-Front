@@ -1,16 +1,58 @@
 import React, { useState, useEffect } from 'react';
-import { useToken, useUser } from '../Logic/UserContext';
+import { useToken} from '../Logic/UserContext';
+//import { useUser } from '../Logic/UserContext';
 import { useNavigate } from "react-router-dom";
 
 function ThreadTemplate({ thread, updateThread }) {
   const token = useToken();
-  const authUser = useUser();
+  //const authUser = useUser();
   const [userData, setUserData] = useState({});
   const [magazineData, setMagazineData] = useState({});
   const [commentsData, setCommentsData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
+    async function getUser(token) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${thread.author}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching user data');
+      }
+      return response.json();
+    }
+  
+    async function getMagazine(token) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${thread.magazine}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching magazine data');
+      }
+      return response.json();
+    }
+  
+    async function getComments(token) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/comments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching comments data');
+      }
+      return response.json();
+    }
     const fetchData = async () => {
       try {
         const userData = await getUser(token);
@@ -35,49 +77,8 @@ function ThreadTemplate({ thread, updateThread }) {
     if (token) {
       fetchData();
     }
-  }, [token]);
+  }, [token, thread]);
 
-  async function getUser(token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${thread.author}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching user data');
-    }
-    return response.json();
-  }
-
-  async function getMagazine(token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines/${thread.magazine}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching magazine data');
-    }
-    return response.json();
-  }
-
-  async function getComments(token) {
-    const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/comments`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error('Error fetching comments data');
-    }
-    return response.json();
-  }
 
   async function doLike() {
     try {
@@ -91,7 +92,8 @@ function ThreadTemplate({ thread, updateThread }) {
       if (!response.ok) {
         throw new Error('Error liking thread');
       }
-      const updatedThread = await response.json();
+      //const updatedThread = 
+      await response.json();
       updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doLike:', error);
@@ -110,7 +112,8 @@ function ThreadTemplate({ thread, updateThread }) {
       if (!response.ok) {
         throw new Error('Error disliking thread');
       }
-      const updatedThread = await response.json();
+      //const updatedThread = 
+      await response.json();
       updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doDislike:', error);
@@ -129,7 +132,8 @@ function ThreadTemplate({ thread, updateThread }) {
       if (!response.ok) {
         throw new Error('Error boosting thread');
       }
-      const updatedThread = await response.json();
+      //const updatedThread = 
+      await response.json();
       updateThread(prev => prev + 1);
     } catch (error) {
       console.error('Error in doBoost:', error);

@@ -51,7 +51,7 @@ export default function Comment(props) {
                 </header>
                 <figure>
                     <a data-action="mouseover->mentions#user_popup mouseout->mentions#user_popup_out" data-mentions-username-param="Norgur" href={`/Profile/${author_id}`}>
-                        <img width="40" height="40" src={`${props.avatar}`} aria-expanded="true" className="popover-control--active"></img>
+                        <img width="40" height="40" src={`${props.avatar}`} className="popover-control--active" alt="avatar"></img>
                     </a>
                 </figure>
                 <div className="content">
@@ -68,22 +68,22 @@ export default function Comment(props) {
                 <footer>
                     <menu>
                         <li>
-                            <a className="stretched-link" data-action="subject#getForm" onClick={(e) => {e.stopPropagation();setOpened(!opened)}}>reply</a>
+                            <button className="stretched-link" data-action="subject#getForm" onClick={(e) => {e.stopPropagation();setOpened(!opened)}}>reply</button>
                         </li>
                         <li>
-                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleBoost(comment_id)}}>
+                            <button className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleBoost(comment_id)}}>
                                 boost <span className="" data-subject-target="upvoteCounter">({boosts})</span>
-                            </a>
+                            </button>
                         </li>
                         <li>
-                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e)=> {e.stopPropagation();setOpened2(!opened2)}}>
+                            <button className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e)=> {e.stopPropagation();setOpened2(!opened2)}}>
                                 edit 
-                            </a>
+                            </button>
                         </li>
                         <li>
-                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleDelete(comment_id)}}>
+                            <button className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleDelete(comment_id)}}>
                                 delete  
-                            </a>
+                            </button>
                         </li>
                     </menu>
                     <div>

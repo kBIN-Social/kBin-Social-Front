@@ -1,7 +1,8 @@
 import ProfileContent from "../Components/ProfileContent";
-import ProfileHead from "../Components/ProfileHead";
+//import ProfileHead from "../Components/ProfileHead";
 import Header from "../Components/Header";
-import { useToken, useUser } from '../Logic/UserContext';
+import { useToken} from '../Logic/UserContext';
+//import {useUser } from '../Logic/UserContext';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -12,6 +13,19 @@ function Profile() {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
+        async function getUserData(token) {
+            const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${id}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+              },
+            });
+            if (!response.ok) {
+              throw new Error('Error fetching user data');
+            }
+            return response.json();
+        }
         const fetchUserData = async () => {
             try {
                 const userData = await getUserData(token, id);
@@ -24,20 +38,6 @@ function Profile() {
             fetchUserData();
         }
     }, [token, id]);
-
-    async function getUserData(token) {
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`,
-          },
-        });
-        if (!response.ok) {
-          throw new Error('Error fetching user data');
-        }
-        return response.json();
-    }
     
 
     return (

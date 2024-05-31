@@ -1,5 +1,5 @@
 import React from "react";
-import { useToken, useUser } from '../Logic/UserContext';
+import { useToken} from '../Logic/UserContext';
 import { useNavigate } from "react-router-dom";
 import Header from './Header';
 

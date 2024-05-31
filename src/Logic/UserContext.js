@@ -1,5 +1,6 @@
-import React, { createContext, useState , useContext, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { createContext, useState , useContext} from 'react';
+//import { useEffect } from 'react';
+//import { useSearchParams } from 'react-router-dom';
 
 export const UserContext = createContext();
 
@@ -68,12 +69,12 @@ export const UserContextProvider  = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+  //useEffect(() => {
     setUser1Token('bf5b989610f5c531d9b7fa2d4eb0b4fbb6acbc1e');
     setUser2Token('5c19068fa00265a05d52e497606a31c279658f7e');
     setUser3Token('5c19068fa00265a05d52e497606a31c279658f7e');
     setCurrentUserId(1)
-  }, []); 
+  //}, []); 
 
   async function getUserData(token) {
     const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/profile/me`, {

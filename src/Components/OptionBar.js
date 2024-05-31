@@ -1,4 +1,4 @@
-import { useUser } from '../Logic/UserContext';
+//import { useUser } from '../Logic/UserContext';
 
 function OptionBar({ setOrderState, setFilterState }) {
   
@@ -28,19 +28,19 @@ function OptionBar({ setOrderState, setFilterState }) {
               </button>
               <ul className="dropdown__menu">
                 <li>
-                  <a onClick={() => setFilterState('all')} className="active">
+                  <button onClick={() => setFilterState('all')} className="active">
                     all
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a onClick={() => setFilterState('threads')} className="">
+                  <button onClick={() => setFilterState('threads')} className="">
                     threads
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a onClick={() => setFilterState('links')} className="">
+                  <button onClick={() => setFilterState('links')} className="">
                     links
-                  </a>
+                  </button>
                 </li>
               </ul>
             </li>

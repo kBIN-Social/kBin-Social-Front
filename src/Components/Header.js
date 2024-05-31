@@ -55,7 +55,7 @@ function Header() {
         </nav>
         <menu>
           <li>
-          <a href="#" className="text" aria-label="" title="p"><p style={{paddingTop: '15px'}}>🔍</p></a>
+          <a href="/search" className="text" aria-label="" title="p"><p style={{paddingTop: '15px'}}>🔍</p></a>
           </li>
           
           <li className="dropdown">
@@ -83,7 +83,7 @@ function Header() {
 
 
           <li className="dropdown">
-          <a href="" className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>Profile</p></a>
+          <a href={`/profile/${user.id}`} className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>Profile</p></a>
             <ul className="dropdown__menu">
               <li>
                 <a href={`/profile/${user.id}`} className="">
@@ -101,31 +101,32 @@ function Header() {
 
 
           <li className="dropdown">
-            <a href="" className="text" aria-label="" title=""><p style={{paddingTop: '15px'}}>{`User ${currUserId}`}</p></a>
+            <a href={`/profile/${user.id}`} className="text" aria-label="" title="">
+              <p style={{paddingTop: '15px'}}>{`User ${currUserId}`}</p></a>
             <ul className="dropdown__menu">
               <li>
-                <a href="#" onClick={(e)=>{
+                <button onClick={(e)=>{
                   e.preventDefault();
                   setCurrUser(1)
                 }} className={currUserId === 1 ? "active" : ""}>
                   User 1
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" onClick={(e)=>{
+                <button onClick={(e)=>{
                   e.preventDefault();
                   setCurrUser(2)
                 }} className={currUserId === 2 ? "active" : ""}>
                   User 2
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#" onClick={(e)=>{
+                <button  onClick={(e)=>{
                   e.preventDefault();
                   setCurrUser(3)
                 }} className={currUserId === 3 ? "active" : ""}>
                   User 3
-                </a>
+                </button>
               </li>
             </ul>
           </li>
