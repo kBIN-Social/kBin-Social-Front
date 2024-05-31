@@ -69,7 +69,7 @@ export const UserContextProvider  = ({ children }) => {
   };
 
   useEffect(() => {
-    setUser1Token('bf5b989610f5c531d9b7fa2d4eb0b4fbb6acbc1e');
+    setUser1Token('d762bc6cec9b92c1d447d6d6172e84292da6c9a0');
     setUser2Token('5c19068fa00265a05d52e497606a31c279658f7e');
     setUser3Token('5c19068fa00265a05d52e497606a31c279658f7e');
     setCurrentUserId(1)
