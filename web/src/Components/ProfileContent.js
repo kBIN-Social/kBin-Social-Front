@@ -120,6 +120,10 @@ async function getUserBoostsComments(user, token) {
   return response.json();
 }
 
+if (user === null || user === undefined) {
+  return <p>Loading</p>;
+}
+
   return (
 <div id="middle" className="page-user page-user-overview">
   <div className="kbin-container">
