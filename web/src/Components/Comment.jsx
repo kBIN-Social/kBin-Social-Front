@@ -92,7 +92,7 @@ export default function Comment(props) {
                 </footer>
             </blockquote>
             <div id="reply-box">
-                {!opened ? null : <InputBox actionName ="Reply" action= {handleUpdate} father_id={comment_id}  />}
+                {!opened ? null : <InputBox actionName ="Reply" action= {handleReply} father_id={comment_id}  />}
             </div>
             {hasChildren ? <ul>{listChildren}</ul> : null}
         </div>

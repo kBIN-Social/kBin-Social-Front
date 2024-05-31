@@ -32,7 +32,7 @@ export default function ThreadDetail() {
     }, [token, id, counter]);
 
     async function getCommentsData(token, id) {
-        const endPoint = `${deployUrl}/api/v1/threads/${id}/comments`;
+        const endPoint = `${deployUrl}/api/v1/threads/${id}/comments?order_by=newest`;
         const response = await fetch(endPoint, {
             method: 'GET',
             headers: {
@@ -100,7 +100,8 @@ export default function ThreadDetail() {
                 };
                 if (fatherId) {
                     addChildComment(fatherId, newComment);
-                } else {
+                }
+                else {
                     setComments(prevComments => [newComment, ...prevComments]);
                 }
             }
@@ -123,7 +124,7 @@ export default function ThreadDetail() {
     return (
         <div id="thread_detail">
             <Header />
-            <ThreadTemplate thread={threadInfo} updateThread={counter}/> 
+            <ThreadTemplate thread={threadInfo} updateThread={setCounter}/> 
             <InputBox actionName={'add comment'} action={handleMakeComment}/>
             {comments.length ? <ListComments commentsData={comments} /> : <div>Loading...</div>}
         </div>
