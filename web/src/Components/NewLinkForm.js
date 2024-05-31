@@ -73,7 +73,7 @@ function NewLinkForm() {
         const url = formDataTEMP.get('new_link[url]');
         const title = formDataTEMP.get('new_link[title]');
         const content = formDataTEMP.get('new_link[content]');
-        //const magazine = formDataTEMP.get('new_link[magazine]');
+        const magazine = formDataTEMP.get('new_link[magazine]');
 
         const formData = new FormData();
       
