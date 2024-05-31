@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useToken, useUser } from '../Logic/UserContext';
+import { useNavigate } from "react-router-dom";
 
 function ThreadTemplate({ thread, updateThread }) {
   const token = useToken();
@@ -7,6 +8,7 @@ function ThreadTemplate({ thread, updateThread }) {
   const [userData, setUserData] = useState({});
   const [magazineData, setMagazineData] = useState({});
   const [commentsData, setCommentsData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,6 +136,25 @@ function ThreadTemplate({ thread, updateThread }) {
     }
   }
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    if (window.confirm('¿Estás segura/o?')) {
+      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/${thread.id}/`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        navigate('/'); // Redirect to home or any other page after deletion
+      } else {
+        console.error('Failed to delete the thread');
+      }
+    }
+  };
+
   return (
     <article className="entry section subject no-image">
       <header>
@@ -194,6 +215,19 @@ function ThreadTemplate({ thread, updateThread }) {
             <button onClick={doBoost} type="submit" className="boost-link">
               boost ({thread.boost.length})
             </button>
+          </li>
+          <li className="dropdown">
+            <button className="stretched-link" data-subject-target="more">otros</button>
+            <ul className="dropdown__menu">
+              <li>
+                <a href={`/threads/${thread.id}/edit`} className="">
+                  edit
+                </a>
+              </li>
+              <li>
+                <button onClick={handleDelete}>borrar</button>
+              </li>
+            </ul>
           </li>
         </menu>
       </footer>
