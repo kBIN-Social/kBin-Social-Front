@@ -11,70 +11,6 @@ export default function ListComments(props) {
     //const [forceUpdate, setForceUpdate] = useState(0);
     const localUrl = "http://127.0.0.1:8000";
     const deployUrl = "https://asw-kbin.azurewebsites.net";
-    const isThread = false ;
-
-    useEffect(() => {
-        const fetchCommentData = async () => {
-            try {
-                const commentsData = await getCommentsData(token, id);
-                console.log('Comments data:', commentsData);
-
-                // 4. Obtener detalles del autor para cada comentario
-                const commentsWithUserDetails = await Promise.all(commentsData.map(async (comment) => {
-                    const children = commentsData.filter(c => c.father === comment.id);
-                    const userDetails = await getUserDetails(comment.author, token);
-                    console.log(`User data for comment ${comment.id}:`, userDetails);
-                    return {
-                        ...comment,
-                        children: children,
-                        userId: userDetails.id,
-                        username: userDetails.username,
-                        avatar: userDetails.avatar,
-                    };
-                }));
-
-                console.log('Comments with user details:', commentsWithUserDetails);
-                // 5. Establecer los comentarios en el estado
-                setComments(commentsWithUserDetails);
-            } catch (error) {
-                console.error('Error fetching comments or user data:', error);
-            }
-        };
-
-        fetchCommentData();
-    }, [token, id]);
-    
-    async function getCommentsData(token, id) {
-        const endPoint = `${deployUrl}/api/v1/threads/${id}/comments`;
-        const response = await fetch(endPoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            credentials: 'include'
-        });
-        if (!response.ok) {
-            throw new Error('Error fetching comments data');
-        }
-        return response.json();
-    }
-
-    async function getUserDetails(userId, token) {
-        const endPoint = `${deployUrl}/api/v1/profile/${userId}`;
-        const response = await fetch(endPoint, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${token}`,
-            },
-            credentials: 'include'
-        });
-        if (!response.ok) {
-            throw new Error('Error fetching user data');
-        }
-        return response.json();
-    }
     async function remove(commentId) {
         await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/remove`, {
             method: 'POST',
@@ -250,7 +186,7 @@ export default function ListComments(props) {
 
     function addChildComment(parentId, newComment) {
             setComments(comments.map((comment) => {
-                if(comment.id = parentId) {
+                if(comment.id == parentId) {
                     comment.children.push(newComment);
                 }
                 return {...comment}
