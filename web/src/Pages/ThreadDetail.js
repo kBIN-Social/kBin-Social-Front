@@ -122,7 +122,7 @@ export default function ThreadDetail() {
     if (!threadInfo) return redirect("NotFound404");
 
     return (
-        <div id="thread_detail">
+        <div id="thread_detail" className="theme--dark">
             <Header />
             <ThreadTemplate thread={threadInfo} updateThread={setCounter}/> 
             <InputBox actionName={'add comment'} action={handleMakeComment}/>

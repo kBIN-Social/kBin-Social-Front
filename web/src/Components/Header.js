@@ -55,7 +55,7 @@ function Header() {
         </nav>
         <menu>
           <li>
-          <a href="#" className="text" aria-label="" title="p"><p style={{paddingTop: '15px'}}>🔍</p></a>
+          <a href="/search" className="text" aria-label="" title="p"><p style={{paddingTop: '15px'}}>🔍</p></a>
           </li>
           
           <li className="dropdown">

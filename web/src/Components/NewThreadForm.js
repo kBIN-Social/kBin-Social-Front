@@ -70,16 +70,14 @@ function NewLinkForm() {
         const formDataTEMP = new FormData(form);
       
         // Obtener los valores de username, description, avatar y cover del formData
-        const url = formDataTEMP.get('new_link[url]');
         const title = formDataTEMP.get('new_link[title]');
         const content = formDataTEMP.get('new_link[content]');
         const magazine = formDataTEMP.get('new_link[magazine]');
-        const isLink = true
+        const isLink = false
 
         const formData = new FormData();
       
         // Modificar el formData para incluir estos valores
-        formData.set('url', url);
         formData.set('titol', title);
         formData.set('cos', content);
         formData.set('isLink', isLink);
@@ -121,25 +119,12 @@ function NewLinkForm() {
           </div>
           <div id="content" className="section">
             <div className="container">
-              <h1 hidden="">New Link</h1>
+              <h1 hidden="">New Thread</h1>
               <form
                 name="new_link"
                 method="post"
                 encType="multipart/form-data"
               >
-                <div>
-                  <label htmlFor="new_link_url">URL</label>
-                  <input
-                    type="text"
-                    id="new_link_url"
-                    name="new_link[url]"
-                    data-controller="input-length autogrow"
-                    data-entry-link-create-target="user_about"
-                    data-action="input-length#updateDisplay"
-                    data-input-length-max-value="30"
-                    style={{ overflow: "hidden", height: "50px" }}
-                  />
-                </div>
                 <label htmlFor="new_link_title">Title</label>
                 <div>
                   <textarea
