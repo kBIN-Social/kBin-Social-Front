@@ -1,7 +1,7 @@
-import React,{useState} from "react";
-export default function InputBox({handleMakeComment,father_id }) {
+import React,{useEffect, useState} from "react";
+export default function InputBox({actionName="action",action,father_id,previousText }) {
     console.log("Pare: "+ father_id)
-    const[text,setText] = useState(null) ;
+    const[text,setText] = useState(previousText) ;
     console.log(text) ;
     return (
         <div id = "comment-add"class="section">
@@ -13,8 +13,8 @@ export default function InputBox({handleMakeComment,father_id }) {
         <br/> 
         <button type="submit" id="entry_comment_665439133bbb14.06536950_submit" name="entry_comment[submit]" 
         class="btn btn__primary" data-action="subject#sendForm"
-        onClick={(e) =>{e.stopPropagation();handleMakeComment(text,father_id)}}
-        >Add comment</button>
+        onClick={(e) =>{e.stopPropagation();action(text,father_id)}}
+        >{actionName}</button>
         </div> 
     )
     

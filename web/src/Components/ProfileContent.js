@@ -260,8 +260,7 @@ async function getUserBoostsComments(user, token) {
             ) : elementState === "comments" ? (
               <div>
                 {comments && comments.length > 0 && (
-                  <ListComments props={{...comments, userId : user.id, username : user.username, avatar : user.avatar}}/>
-                )}
+                  <ListComments commentsData={comments}/>)}
               </div>
             ) : elementState === "boosts" ? (
               <div>
@@ -271,7 +270,7 @@ async function getUserBoostsComments(user, token) {
                   ))
                 )}
                 {comments && comments.length > 0 && (
-                  <ListComments props={{...comments, userId : user.id, username : user.username, avatar : user.avatar}}/>
+                  <ListComments commentsData={comments}/>
                 )}
               </div> 
             ) : (

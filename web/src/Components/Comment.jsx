@@ -3,11 +3,11 @@ import InputBox from "./InputBox";
 
 export default function Comment(props) {
     const { comment_id, author_id, author, body, created_at, likes, dislikes, boosts, level, children: initialChildren } = props;
-    const { handleLike, handleDislike, handleBoost, handleReply, handleMakeComment,handleDelete } = props;
+    const { handleLike, handleDislike, handleBoost, handleReply, handleMakeComment,handleDelete,handleUpdate } = props;
     
     const [opened, setOpened] = useState(false);
+    const[opened2,setOpened2]  = useState(false)
     const [children, setChildren] = useState(initialChildren);
-
     useEffect(() => {
         setChildren(initialChildren);
     }, [initialChildren]);
@@ -76,8 +76,8 @@ export default function Comment(props) {
                             </a>
                         </li>
                         <li>
-                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e) => {e.stopPropagation();handleDelete(this,comment_id)}}>
-                                update 
+                            <a className="stretched-link" type="submit" data-action="subject#favourite" onClick={(e)=> {e.stopPropagation();setOpened2(!opened2)}}>
+                                edit 
                             </a>
                         </li>
                         <li>
@@ -85,13 +85,14 @@ export default function Comment(props) {
                                 delete  
                             </a>
                         </li>
-                        
                     </menu>
-                    <div data-subject-target="container" className="js-container"></div>
+                    <div>
+                    {opened2? <InputBox actionName="Update" action={handleUpdate} previousText={body} father_id={comment_id}/>  : null } 
+                    </div>
                 </footer>
             </blockquote>
             <div id="reply-box">
-                {!opened ? null : <InputBox handleMakeComment={handleReply} father_id={comment_id} />}
+                {!opened ? null : <InputBox actionName ="Reply" action= {handleUpdate} father_id={comment_id}  />}
             </div>
             {hasChildren ? <ul>{listChildren}</ul> : null}
         </div>

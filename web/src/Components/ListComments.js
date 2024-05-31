@@ -1,16 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { redirect, useParams } from 'react-router-dom';
+import { json, redirect, useParams } from 'react-router-dom';
 import Comment from "../Components/Comment";
 import { useToken, useUser } from '../Logic/UserContext';
 
-export default function ListComments(props) {
+export default function ListComments({commentsData }) {
     const { id } = useParams();
     const user = useUser();
     const token = useToken();
-    const [comments, setComments] = useState(props.comments);
+    const [comments, setComments] = useState([]);
     //const [forceUpdate, setForceUpdate] = useState(0);
     const localUrl = "http://127.0.0.1:8000";
     const deployUrl = "https://asw-kbin.azurewebsites.net";
+    useEffect(() => {
+        const fetchCommentData = async () => {
+            try {
+                console.log("props:") ;
+                console.log(commentsData)
+                console.log('Fetching comments data')
+                // 4. Obtener detalles del autor para cada comentario
+                const commentsWithUserDetails = await Promise.all(commentsData.map(async (comment) => {
+                    const children = commentsData.filter(c => c.father === comment.id);
+                    const userDetails = await getUserDetails(comment.author, token);
+                    console.log(`User data for comment ${comment.id}:`, userDetails);
+                    return {
+                        ...comment,
+                        children: children,
+                        userId: userDetails.id,
+                        username: userDetails.username,
+                        avatar: userDetails.avatar
+                    };
+                }));
+
+                console.log('Comments with user details:', commentsWithUserDetails);
+                setComments(commentsWithUserDetails);
+                console.log(comments) ;
+            } 
+            catch (error) {
+                console.error('Error fetching comments or user data:', error);
+            }
+        };
+
+        fetchCommentData();
+    }, [token, id]);
+
+    async function getUserDetails(userId, token) {
+        const endPoint = `${deployUrl}/api/v1/profile/${userId}`;
+        const response = await fetch(endPoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`,
+            },
+            credentials: 'include'
+        });
+        if (!response.ok) {
+            throw new Error('Error fetching user data');
+        }
+        return response.json();
+    }
+    
     async function remove(commentId) {
         await fetch(`${deployUrl}/api/v1/comments/${commentId}/vote/remove`, {
             method: 'POST',
@@ -187,7 +235,7 @@ export default function ListComments(props) {
     function addChildComment(parentId, newComment) {
             setComments(comments.map((comment) => {
                 if(comment.id == parentId) {
-                    comment.children.push(newComment);
+                    comment.children = [newComment,...comment.children];
                 }
                 return {...comment}
         })) ;
@@ -236,9 +284,9 @@ export default function ListComments(props) {
             }
         }
    async  function handleDeleteComment(commentId) {
-        const url = `${deployUrl}/api/v1/comments`;
+        const url = `${deployUrl}/api/v1/comments/${commentId}`;
         const response = await fetch(url, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
@@ -263,6 +311,30 @@ export default function ListComments(props) {
             setComments(comments => deleteCommentAndChildren(comments, commentId));
         }
    }
+   async function handleUpdateComment(text,commentId) {
+    const url = `${deployUrl}/api/v1/comments/${commentId}/`;
+    const body = {
+        body : text
+    }
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+        },
+        body: JSON.stringify(body),
+        credentials: 'include'
+    });
+    if(response.status == 401) {
+        window.alert("You are not the author of this comment!");
+    }
+    else if(response.ok) {
+        setComments(comments.map((c)=>{
+            if(c.id == commentId) c.body = text ;
+            return c ;
+        }))
+    }
+    }
    function noFather(id) {
     return id == null
    }
@@ -289,6 +361,7 @@ const renderComments = (commentList) => {
                     handleBoost={handleBoost}
                     handleReply={handleMakeComment}
                     handleDelete={handleDeleteComment}
+                    handleUpdate = {handleUpdateComment}
                 />
             </li>
             :
