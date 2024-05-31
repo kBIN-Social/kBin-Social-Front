@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { json, redirect, useParams } from 'react-router-dom';
-import Comment from "../Components/Comment";
+import Comment from "./Comment";
 import { useToken, useUser } from '../Logic/UserContext';
 
 export default function ListComments({commentsData }) {

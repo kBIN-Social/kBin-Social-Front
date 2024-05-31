@@ -1,7 +1,7 @@
 import React from "react";
 import { useToken, useUser } from '../Logic/UserContext';
 import { useNavigate } from "react-router-dom";
-import Header from '../Components/Header';
+import Header from './Header';
 
 function MagazineForm() {
     const token = useToken();

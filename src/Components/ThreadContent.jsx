@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useToken, useUser } from '../Logic/UserContext';
-import ThreadTemplate from '../Components/ThreadTemplate';
-import OptionBar from '../Components/OptionBar';
+import ThreadTemplate from './ThreadTemplate';
+import OptionBar from './OptionBar';
 
 function ThreadContent({ user }) {
   const token = useToken();
