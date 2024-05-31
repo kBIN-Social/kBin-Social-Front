@@ -26,7 +26,7 @@ function NewLinkForm() {
     }, [user, token]);
 
     async function fetchMagazines(user, token) {
-      const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/magazines`, {
+      const response = await fetch(`http://127.0.0.1:8000/api/v1/magazines/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -74,6 +74,7 @@ function NewLinkForm() {
         const title = formDataTEMP.get('new_link[title]');
         const content = formDataTEMP.get('new_link[content]');
         const magazine = formDataTEMP.get('new_link[magazine]');
+        const isLink = true
 
         const formData = new FormData();
       
@@ -81,10 +82,10 @@ function NewLinkForm() {
         formData.set('url', url);
         formData.set('titol', title);
         formData.set('cos', content);
-        formData.set('isLink', true);
+        formData.set('isLink', isLink);
         formData.set('magazine', selectedMagazine);
 
-        const response = await fetch(`https://asw-kbin.azurewebsites.net/api/v1/threads/`, {
+        const response = await fetch(`http://127.0.0.1:8000/api/v1/threads/`, {
             method: 'POST',
             headers: {
             'Authorization': `Token ${token}`,
