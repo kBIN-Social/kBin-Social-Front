@@ -149,6 +149,7 @@ function ThreadTemplate({ thread, updateThread }) {
 
       if (response.ok) {
         navigate('/'); // Redirect to home or any other page after deletion
+        updateThread(prev => prev + 1);
       } else {
         console.error('Failed to delete the thread');
       }
